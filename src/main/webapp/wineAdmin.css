@@ -1,0 +1,117 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 18, 2017, 7:17:14 PM
+    Author     : Jennifer
+*/
+
+
+
+body {
+
+    font-family: 'Proza Libre', sans-serif;
+    color: #652e38;
+    font-weight: bold; 
+    font-size: large; 
+    background-color: #fcfbf3;
+}
+
+#buttons {
+    position:relative;
+    left:940px;
+}
+@media screen and (min-width: 768px) {
+    .custom-class {
+        width: 70%; /* either % (e.g. 60%) or px (400px) */
+    }
+}
+
+#delete, #add {
+    font-family: 'Proza Libre', sans-serif;
+    font-weight: bold; 
+    padding: 10px;
+    background-color: #652e38; 
+    color: #f1dba9;
+    border-radius: 6px; 
+    font-size: large; 
+    border-color: #652e38; 
+}
+
+#submit {
+    padding: 15px;
+    background-color: #652e38; 
+    color: #f1dba9;
+    border-radius: 6px; 
+    border-color: #652e38; 
+}
+#editWine {
+    border-radius: 6px; 
+    border-color: #652e38; 
+}
+
+h2{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: bolder;
+}
+
+h1 {
+    font-family: 'Cormorant Upright', serif;
+    font-weight: bolder;
+    font-size: xx-large; 
+}
+
+#content {
+    padding: 25px; 
+}
+
+#goToListButton {
+    padding: 10px 10px;
+    font-size: 28px;
+    text-align: center;
+    color: #652e38;
+    
+    background-color: #f1dba9;
+    border-color: #652e38;
+    border-radius: 10px;
+ 
+}
+
+
+
+.button:active {
+    background-color: #dfb9c0;
+    box-shadow: 0 5px #666;
+    transform: translateY(8px);
+}
+
+th {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 70px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 70px;
+    background-color: #f1dba9;
+    color: #652e38;
+    text-align: center; 
+
+
+
+}
