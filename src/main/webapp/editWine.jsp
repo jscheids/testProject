@@ -13,11 +13,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-        <link rel="stylesheet" href="wineAdmin.css">
         <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:700|Cormorant+Upright:400,700|Proza+Libre" rel="stylesheet">
-
-
+        <link rel="stylesheet" href="wineAdmin.css">
     </head>
     <body>
         <jsp:include page ="adminHeader.jsp" />
@@ -25,7 +22,14 @@
         <div class="container"> 
             <h1>Edit Wine</h1>
             <img class ='img-responsive' src="${pageContext.request.contextPath}/images/${wineImgUrl}"><br>
+            <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
+
+                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
+            </form>
             <form id="editWineForm" name="editWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
+
+                <br>
+                <p id="errorMsg">${errMsg}</p>
                 <table class="table">  
                     <tr>
                         <td>
@@ -66,12 +70,14 @@
                             <input type="text" id="dateAdded" name="dateAdded" readonly="readonly" value="${dateAdded}">
                         </td>
                     </tr>  
-
                 </table>
                 <br>
                 <input type="submit" name="submit" id="submit" value="Submit">
+                <br>
+                <br>
+
             </form>
-            <p>${errMsg}</p>
+
         </div>
         <jsp:include page ="adminFooter.jsp" /> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

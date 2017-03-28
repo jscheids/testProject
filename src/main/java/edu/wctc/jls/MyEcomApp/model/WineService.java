@@ -13,6 +13,8 @@ import java.util.Objects;
 public class WineService {
 
     private IWineDao wineDao;
+    private static final int MIN_RECORDS = 1;
+    private static final String DAO_EXCEPTION_MSG = "wine dao is null";
 
     /**
      * Constructor requires dao object.
@@ -22,7 +24,7 @@ public class WineService {
      */
     public WineService(IWineDao wineDao) {
         if (wineDao == null) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException(DAO_EXCEPTION_MSG);
         }
         setWineDao(wineDao);
     }
@@ -40,7 +42,7 @@ public class WineService {
      */
     public final List<Wine> retrieveWineList(String tableName, int maxRecords)
             throws ClassNotFoundException, SQLException, InvalidParameterException {
-        if (tableName.isEmpty() || tableName == null || maxRecords < 1) {
+        if (tableName.isEmpty() || tableName == null || maxRecords < MIN_RECORDS) {
             throw new InvalidParameterException();
         }
         return wineDao.getWineList(tableName, maxRecords);
@@ -58,7 +60,7 @@ public class WineService {
      * @throws InvalidParameterException
      */
     public final Wine retrieveWine(String wineTableName, String wineIdColName, String wineId) throws ClassNotFoundException,
-            SQLException, InvalidParameterException, InvalidParameterException {
+            SQLException, InvalidParameterException {
         if (wineTableName.isEmpty() || wineTableName == null || wineIdColName.isEmpty() || wineIdColName == null || wineId.isEmpty() || wineId == null) {
             throw new InvalidParameterException();
         }
@@ -151,7 +153,7 @@ public class WineService {
      */
     public final void setWineDao(IWineDao wineDao) throws InvalidParameterException {
         if (wineDao == null) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException(DAO_EXCEPTION_MSG);
         }
         this.wineDao = wineDao;
     }
@@ -191,10 +193,12 @@ public class WineService {
         }
         return true;
     }
-/**
- * obligatory toString
- * @return  String 
- */
+
+    /**
+     * obligatory toString
+     *
+     * @return String
+     */
     @Override
     public String toString() {
         return "WineService{" + "wineDao=" + wineDao + '}';

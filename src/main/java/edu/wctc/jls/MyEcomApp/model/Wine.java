@@ -6,14 +6,8 @@
 package edu.wctc.jls.MyEcomApp.model;
 
 import edu.wctc.jls.exeption.InvalidParameterException;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-
 
 /**
  * This is a domain/entity object reprsenting wine.
@@ -27,7 +21,7 @@ public class Wine {
     private double winePrice;
     private String wineImgUrl;
     private Date dateAdded;
-    private final String DEFAULT_LOGO = "logo.png";
+    private static final int MIN_VALUE = 0;
 
     /**
      * Default Constructor
@@ -73,7 +67,7 @@ public class Wine {
      * @throws InvalidParameterException
      */
     public final void setWineID(Integer wineID) {
-        if (wineID < 0) {
+        if (wineID < MIN_VALUE) {
             throw new InvalidParameterException();
         }
         this.wineID = wineID;
@@ -85,6 +79,7 @@ public class Wine {
      * @return double
      */
     public final double getWinePrice() {
+
         return winePrice;
     }
 
@@ -95,9 +90,7 @@ public class Wine {
      * @throws InvalidParameterException
      */
     public final void setWinePrice(double winePrice) {
-        if (winePrice < 0) {
-            throw new InvalidParameterException();
-        }
+
         this.winePrice = winePrice;
     }
 
@@ -107,8 +100,8 @@ public class Wine {
      * @return String
      */
     public final String getWineImgUrl() {
-//ImageFileHelper imgHelper = new ImageFileHelper(wineImgUrl); 
- wineImgUrl = wineImgFileChecker(wineImgUrl);
+        ImageFileHelper imgHelper = new ImageFileHelper(wineImgUrl);
+        wineImgUrl = imgHelper.wineImgFileChecker(wineImgUrl);
         return wineImgUrl;
     }
 
@@ -120,9 +113,8 @@ public class Wine {
      */
     public final void setWineImgUrl(String wineImgUrl) {
         if (wineImgUrl.isEmpty() || wineImgUrl == null) {
-            throw new InvalidParameterException("wine img missing");
+            throw new InvalidParameterException();
         }
-        
 
         this.wineImgUrl = wineImgUrl;
     }
@@ -148,65 +140,6 @@ public class Wine {
         }
         this.dateAdded = dateAdded;
     }
-    /**
-     * private helper method for checking if a img file at brought back from the database really exists 
-     * @param wineImgUrl the wine img url being requested from the database 
-     * @return a string 
-     */
-   private String  wineImgFileChecker(String wineImgUrl){
-    File file = new File("C:\\Users\\Jennifer\\Documents\\NetBeansProjects\\jls-MyEcomApp\\src\\main\\webapp\\images");
-    
-    
-    List<File> list = new ArrayList<File>();
-    List<String> fileNames = getImgFiles(file, list);
-    
-    
-     Set<String> set = new HashSet<String>(fileNames);
-  if (set.contains(wineImgUrl))
-  {
- 
-  }
-         else wineImgUrl = DEFAULT_LOGO; 
-
-   return wineImgUrl; 
-}
-   /**
-    * a helper method to wineImgFileChecker to get the String list of file names that exist
-    * @param rootfile - the file to be checked for the img url
-    * @param list list of files 
-    * @return a list of strings of file names 
-    */
- private  List<String> getImgFiles(File rootfile, List<File> list)
-{       
-    File[] files; 
-   
-    List<String> fileNames = new ArrayList<String>(); 
-   
-     
-        files = rootfile.listFiles();
-  
- 
-    for (File file : files)
-    {
-        if(file.isDirectory())
-        {
-            getImgFiles(file, list);
-        }
-        else
-        {
-           
-                list.add(file);
-                fileNames.add(file.getName());
-               // System.out.println(file.getName());
-                
-            
-        }
-    }
-        return fileNames; 
-       
-    
-}
-
 
     /**
      * Overridden hashCode
@@ -269,42 +202,5 @@ public class Wine {
     public final String toString() {
         return "Wine{" + "wineID=" + wineID + ", wineName=" + wineName + ", winePrice=" + winePrice + ", wineImgUrl=" + wineImgUrl + ", dateAddes=" + dateAdded + '}';
     }
-    
- 
-   
 
-
-public static void main(String[] args) 
-{
-    File file = new File("C:\\Users\\Jennifer\\Documents\\NetBeansProjects\\jls-MyEcomApp\\src\\main\\webapp\\images");
-    List<File> list = new ArrayList<File>();
-    getMp3Files(file, list);
-    // Use list which contains the files with .mp3 extension
-}
-
-public static void getMp3Files(File rootfile, List<File> list)
-{       
-    File[] files; 
-    if(rootfile.isDirectory())
-    {   
-        files = rootfile.listFiles();
-    }
-    else
-        return;
-    for (File file : files)
-    {
-        if(file.isDirectory())
-        {
-            getMp3Files(file, list);
-        }
-        else
-        {
-           
-                list.add(file);
-            System.out.println(file.getName());
-        }
-    }
-
-
-}
 }

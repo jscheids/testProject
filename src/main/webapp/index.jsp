@@ -21,12 +21,9 @@
         <jsp:include page ="adminHeader.jsp" /> 
         <div id="content">
  
-            <div class="container">
-       
-              
+            <div class="container">         
                      <h2>Admin Console</h2>
                      <h3>Welcome Back!</h3>
-
 
              <br> 
                     <div class="col-xs-6">
@@ -38,17 +35,16 @@
                         <h3>Application was last restarted:</h3>
 
                         <p> <fmt:formatDate pattern="M/d/yyyy hh:mm a" value="${appStarted}"></fmt:formatDate></p>
-                            <h3>Number of visitors:</h3>
-                            <p>The total number of users who are using this application are: 
+                            <h3>Current visitors:</h3>
+                            <p>The total number of users who are currently using this application are: 
                             ${hitCount}
                        
                         </p>
                     </div>
-
                 </div>
             </div>
 
-            <p>${errMsg}</p>
+                            <p id="errorMsg">${errMsg}</p>
         </div>
         <jsp:include page ="adminFooter.jsp" /> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

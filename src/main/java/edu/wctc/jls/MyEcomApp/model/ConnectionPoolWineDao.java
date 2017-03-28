@@ -27,16 +27,19 @@ import javax.sql.DataSource;
  */
 public class ConnectionPoolWineDao implements IWineDao {
 
-    private final String WINE_ID_COL = "wine_id";
-    private final String WINE_NAME_COL = "wine_name";
-    private final String DATE_COL = "date_added";
-    private final String WINE_PRICE_COL = "wine_price";
-    private final String WINE_IMAGE_URL = "wine_img_url";
+    private static final String WINE_ID_COL = "wine_id";
+    private static final String WINE_NAME_COL = "wine_name";
+    private static final String DATE_COL = "date_added";
+    private static final String WINE_PRICE_COL = "wine_price";
+    private static final String WINE_IMAGE_URL = "wine_img_url";
+    private static final double DEFAULT_WINE_PRICE = 0.00;
+    private static final int MIN_RECORDS = 1;
     private DataSource ds;
     private DbAccessor db;
 
     /**
-     * Constructor to setup Connection pool
+     * Constructor to setup Connection pool looking at my perfect final from
+     * advanced java, constructors do not need validation
      *
      * @param ds datasource
      * @param db database
@@ -112,11 +115,8 @@ public class ConnectionPoolWineDao implements IWineDao {
         wine.setWinePrice(Double.parseDouble(object.toString()));
 
         Object urlObj = rawRec.get(WINE_IMAGE_URL) == null ? "" : rawRec.get(WINE_IMAGE_URL).toString();
-        if (urlObj.toString().length() < 3) {
-            wine.setWineImgUrl("logo.jpg");
-        } else {
-            wine.setWineImgUrl((urlObj.toString()));
-        }
+
+        wine.setWineImgUrl((urlObj.toString()));
 
         db.closeConnection();
 
@@ -124,7 +124,7 @@ public class ConnectionPoolWineDao implements IWineDao {
     }
 
     /**
-     * overrides from IWineDao to return a wine list 
+     * overrides from IWineDao to return a wine list
      *
      * @param tableName - the name of the table to get the list from
      * @param maxRecords - number of max records to return from the db
@@ -138,7 +138,7 @@ public class ConnectionPoolWineDao implements IWineDao {
             throws ClassNotFoundException, SQLException, InvalidParameterException {
         //   db.openConnection(driverClass, url, userName, password);
 
-        if (tableName.isEmpty() || tableName == null || maxRecords < 1) {
+        if (tableName.isEmpty() || tableName == null || maxRecords < MIN_RECORDS) {
             throw new InvalidParameterException();
         }
 
@@ -161,19 +161,28 @@ public class ConnectionPoolWineDao implements IWineDao {
             wine.setWineName(wineName);
 
             Object objDateAdded = rawRec.get(DATE_COL);
-            //works a lot better if we check for null date 
+            //works a lot better if we check for null date
             Date dateAdded = (objDateAdded != null) ? (Date) objDateAdded : null;
             wine.setDateAdded(dateAdded);
 
-            Object object = rawRec.get(WINE_PRICE_COL) == null ? "" : rawRec.get(WINE_PRICE_COL).toString();
-            wine.setWinePrice(Double.parseDouble(object.toString()));
+            Object priceObj = rawRec.get(WINE_PRICE_COL);
+            //playing around with this. If the price is null (or any other paramemeter for that matter), nothing comes back in the list
+            // currently with jquery validation, it is impossible to save a record from the view without all the needed paramemters.  This is one way to ensure that a
+            //wine obj has a "valid" price and the that list is visible. Still working on these kinks.... need to look at checking that in the controller
+            //update- 3/28- i did look at in in the controller, and I added logic there to prevent user saving if any of the inputs are null. Still like this though, because
+            // what if somehow there is a "null"" price in the database? this will let the list come back anyways.
+            if (priceObj == null) {
+                // priceObj = DEFAULT_NULL_PRICE;
+                //(Double.parseDouble(priceObj.toString()));
+                wine.setWinePrice(DEFAULT_WINE_PRICE);
+                // throw new InvalidParameterException();
+            } else {
+                wine.setWinePrice(Double.parseDouble(priceObj.toString()));
+            }
 
             String imageUrl = rawRec.get(WINE_IMAGE_URL) == null ? "" : rawRec.get(WINE_IMAGE_URL).toString();
-            if (imageUrl.length() < 3) {
-                wine.setWineImgUrl("logo.png");
-            } else {
-                wine.setWineImgUrl(imageUrl);
-            }
+
+            wine.setWineImgUrl(imageUrl);
 
             records.add(wine);
         }
@@ -225,7 +234,7 @@ public class ConnectionPoolWineDao implements IWineDao {
      */
     @Override
     public final int addWine(String tableName, List<String> wineTableColNames, List<Object> wineTableColValues)
-            throws ClassNotFoundException, SQLException,  InvalidParameterException {
+            throws ClassNotFoundException, SQLException, InvalidParameterException {
         if (wineTableColNames.isEmpty() || wineTableColNames == null || tableName.isEmpty() || tableName == null || wineTableColValues.isEmpty() || wineTableColValues == null) {
             throw new InvalidParameterException();
         }
@@ -257,7 +266,7 @@ public class ConnectionPoolWineDao implements IWineDao {
      * @throws InvalidParameterException
      */
     @Override
-    public final void setDb(DbAccessor db) throws InvalidParameterException{
+    public final void setDb(DbAccessor db) throws InvalidParameterException {
         if (db == null) {
             throw new InvalidParameterException();
         }
@@ -269,7 +278,7 @@ public class ConnectionPoolWineDao implements IWineDao {
      *
      * @return DataSource
      */
-    public final  DataSource getDs() {
+    public final DataSource getDs() {
         return ds;
     }
 
@@ -279,7 +288,7 @@ public class ConnectionPoolWineDao implements IWineDao {
      * @param ds
      * @throws InvalidParameterException
      */
-    public final  void setDs(DataSource ds) throws InvalidParameterException {
+    public final void setDs(DataSource ds) throws InvalidParameterException {
         if (ds == null) {
             throw new InvalidParameterException();
         }
@@ -329,7 +338,7 @@ public class ConnectionPoolWineDao implements IWineDao {
 
         });
 
-        // Find the connection pool and create the DataSource     
+        // Find the connection pool and create the DataSource
         Context ctx = new InitialContext();
         DataSource ds = (DataSource) ctx.lookup("jdbc/wine_store");
 

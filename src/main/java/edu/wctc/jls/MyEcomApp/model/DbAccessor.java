@@ -7,10 +7,12 @@ import javax.sql.DataSource;
 
 /**
  * Interface/strategy class for database access
- *
+ * http://softwareengineering.stackexchange.com/questions/96947/why-should-i-declare-a-class-as-an-abstract-class
+ * http://docs.oracle.com/javase/tutorial/java/IandI/abstract.html
+ * ""declared abstract bc it wouldn't make sense to instantiate it" 
  * @author Jennifer
  */
-public abstract interface DbAccessor {
+public interface DbAccessor {
 
     public abstract int deleteById(String tableName, String idColName, Object id)
             throws SQLException;

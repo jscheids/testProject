@@ -115,7 +115,6 @@ try{
 
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int colCount = rsmd.getColumnCount();
-        System.out.println(colCount);
         Map<String, Object> map = new LinkedHashMap<>();
 
         while (resultSet.next()) {

@@ -26,11 +26,11 @@ public class WineDao implements IWineDao {
     private String userName;
     private String password;
 
-    private final String WINE_ID_COL = "wine_id";
-    private final String WINE_NAME_COL = "wine_name";
-    private final String DATE_COL = "date_added";
-    private final String WINE_PRICE_COL = "wine_price";
-    private final String WINE_IMAGE_URL = "wine_img_url";
+    private static final String WINE_ID_COL = "wine_id";
+    private static  final String WINE_NAME_COL = "wine_name";
+    private static  final String DATE_COL = "date_added";
+    private static  final String WINE_PRICE_COL = "wine_price";
+    private static  final String WINE_IMAGE_URL = "wine_img_url";
 
     /**
      * Constructor for the Wine Dao class.
@@ -165,21 +165,24 @@ public class WineDao implements IWineDao {
             Date dateAdded = (objDateAdded != null) ? (Date) objDateAdded : null;
             wine.setDateAdded(dateAdded);
 
-            Object object = rawRec.get(WINE_PRICE_COL) == null ? "" : rawRec.get(WINE_PRICE_COL).toString();
-            wine.setWinePrice(Double.parseDouble(object.toString()));
+            Object priceObj = rawRec.get(WINE_PRICE_COL) == null ? "" : rawRec.get(WINE_PRICE_COL).toString();
+            if(priceObj == null){
+                throw new InvalidParameterException("Price is missing in db"); 
+            }
+            wine.setWinePrice(Double.parseDouble(priceObj.toString()));
 
             String imageUrl = rawRec.get(WINE_IMAGE_URL) == null ? "" : rawRec.get(WINE_IMAGE_URL).toString();
-            if (imageUrl.length() < 2) {
-                wine.setWineImgUrl("logo.png");
-            } else {
+         
                 wine.setWineImgUrl(imageUrl);
-            }
+            
 
             records.add(wine);
-        }
+        
         db.closeConnection();
 
-        return records;
+       
+    }
+         return records;
     }
 
     /**

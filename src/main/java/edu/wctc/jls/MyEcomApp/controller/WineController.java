@@ -48,7 +48,6 @@ public class WineController extends HttpServlet {
     private static final String WINE_LIST_PAGE = "/wineList.jsp";
     private static final String ADD_WINE_PAGE = "/addWine.jsp";
     private static final String EDIT_WINE_PAGE = "/editWine.jsp";
-    
 
     //these are the values "grabbed" from the page
     private static final String WINE_ID = "wineId";
@@ -56,10 +55,11 @@ public class WineController extends HttpServlet {
     private static final String DATE_ADDED = "dateAdded";
     private static final String WINE_PRICE = "winePrice";
     private static final String WINE_ID_CBX = "wineId";
+     private static final String WINE_LIST = "wines";
     private static final String WINE_IMG_URL = "wineImgUrl";
 
     //database variables 
-    private static final String WI_ID = "id";
+    private static final String WINE_EDIT_ID = "editWine";
     private static final String WINE_TABLE_NAME = "wine";
     private static final String WINE_ID_COL = "wine_id";
     private static final String WINE_NAME_COL = "wine_name";
@@ -73,10 +73,20 @@ public class WineController extends HttpServlet {
     private static final String EDIT_WINE_REQ = "editWine";
     private static final String SAVE_REQ = "saveWine";
     private static final String DELETE_WINE_REQ = "deleteWine";
-    private static final String HOME_REQ ="home";
-    private static final String VIEW_EMAIL_REQ = "viewEmail";
-    private static final int MAX_TABLE_ROWS = 100; 
-      private static final String ERROR_MSG_KEY = "errMsg";
+    private static final String CANCEL_REQ = "cancel";
+    private static final String HOME_REQ = "home";
+    private static final int MAX_TABLE_ROWS = 100;
+    private static final String ERROR_MSG_KEY = "errMsg";
+    private static final String MISSING_INPUT_MSG = "Please ensure all fields have values before saving the record.";
+    
+    
+    private static final String DRIVER_CLASS_KEY = "db.driver.class";
+    private static final String DATABASE_URL_KEY = "db.url";
+    private static final String DATABASE_USERNAME_KEY = "db.username";
+    private static final String DATABASE_PASSWORD_KEY = "db.password";
+    private static final String DATABASE_JNDI_NAME_KEY = "connPoolName";
+     private static final String DAO_CLASS_NAME_KEY = "wineDao"; 
+    private static final String DB_STRATEGY_CLASS_NAME_KEY = "dbStrategy";
 
     // db config init params from web.xml
     private String driverClass;
@@ -86,7 +96,7 @@ public class WineController extends HttpServlet {
     private String dbStrategyClassName;
     private String daoClassName;
     private String jndiName;
-
+    
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -100,35 +110,50 @@ public class WineController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-    
+
         HttpSession session = request.getSession();
         ServletContext ctx = request.getServletContext();
-      String destination = HOME_PAGE;
-  
+        // default initilization for destination var
+        String destination = HOME_PAGE;
+
         String req_Action = request.getParameter(REQ_TYPE);
-       
+
         try {
+            //connection pool
             WineService wineService = injectDependenciesAndGetWineService();
 
             switch (req_Action) {
 
                 case WINE_LIST_REQ:
-                    
-                    destination = WINE_LIST_PAGE;    
-                 List<Wine> wines = wineService.retrieveWineList(WINE_TABLE_NAME,MAX_TABLE_ROWS );
-                    request.setAttribute("wines", wines); 
-                     
+
+                  
+                    List<Wine> wines = new ArrayList<>(); 
+                    try {
+                      wines = wineService.retrieveWineList(WINE_TABLE_NAME, MAX_TABLE_ROWS);
+                      
+                    } catch (InvalidParameterException | SQLException |ClassNotFoundException e ) {
+                        request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+                        destination = HOME_PAGE;
+                    }
+                      destination = WINE_LIST_PAGE;
+                      request.setAttribute(WINE_LIST, wines);
                     break;
-                    
+
                 case DELETE_WINE_REQ:
                     destination = WINE_LIST_PAGE;
                     String[] wineToDelete = request.getParameterValues(WINE_ID_CBX);
                     if (wineToDelete != null) {
-                        for (String id : wineToDelete) {
-                            wineService.deleteWineById(WINE_TABLE_NAME, WINE_ID_COL, id);
+                        try {
+                            for (String id : wineToDelete) {
+                                wineService.deleteWineById(WINE_TABLE_NAME, WINE_ID_COL, id);
+                            }
+                        } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
+                            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+                            destination = WINE_LIST_PAGE;
+
                         }
                     }
-                    
+
                     refreshResults(request, wineService);
                     break;
 
@@ -136,87 +161,114 @@ public class WineController extends HttpServlet {
                     destination = ADD_WINE_PAGE;
                     break;
 
-
                 case EDIT_WINE_REQ:
                     destination = EDIT_WINE_PAGE;
-                    String id = request.getParameter(WI_ID);
+                    String id = request.getParameter(WINE_EDIT_ID);
+                    try {
+                        Wine wine = wineService.retrieveWine(WINE_TABLE_NAME, WINE_ID_COL, id);
+                        request.setAttribute(WINE_ID, wine.getWineID());
+                        request.setAttribute(WINE_NAME, wine.getWineName());
+                        request.setAttribute(WINE_PRICE, wine.getWinePrice());
+                        request.setAttribute(DATE_ADDED, wine.getDateAdded());
+                        request.setAttribute(WINE_IMG_URL, wine.getWineImgUrl());
+                    } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
+                        request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+                        destination = WINE_LIST_PAGE;
 
-                    Wine wine = wineService.retrieveWine(WINE_TABLE_NAME, WINE_ID_COL, id);
-                    
-
-
-
-                    request.setAttribute(WINE_ID, wine.getWineID() );
-                    request.setAttribute(WINE_NAME, wine.getWineName());
-                    request.setAttribute(WINE_PRICE, wine.getWinePrice());
-                    request.setAttribute(DATE_ADDED, wine.getDateAdded());
-                    request.setAttribute(WINE_IMG_URL, wine.getWineImgUrl());
-
+                    }
                     break;
+                    case CANCEL_REQ:
+                    this.refreshResults(request, wineService);
+                    destination = WINE_LIST_PAGE;
+                    break; 
+
+                    
                 case SAVE_REQ:
                     destination = WINE_LIST_PAGE;
-                    try{
+                    try {
 
-                    String wineName = request.getParameter(WINE_NAME);
-                    String winePrice = request.getParameter(WINE_PRICE);
-                    String req_id = request.getParameter(WINE_ID);
-                    String wineImgUrl = request.getParameter(WINE_IMG_URL);
+                        String wineName = request.getParameter(WINE_NAME);
+                        
+                        String winePrice = request.getParameter(WINE_PRICE);
+                        String req_id = request.getParameter(WINE_ID);
+                        String wineImgUrl = request.getParameter(WINE_IMG_URL);
+// if id is not there, it must be a new
+                        if (req_id == null || req_id.isEmpty()) {
+                            DateHelper dh = new DateHelper();
+                            String date = dh.getCurrentDate();
 
-                    if (req_id == null || req_id.isEmpty()) {
-                        DateHelper dh = new DateHelper();
-                        String date = dh.getCurrentDate();
+                            List<String> colNames = new ArrayList<>();
+                           // if(wineName.isEmpty() || wineName == null){
+                           //     wineName = "no name";
+                           // }
+                           
+                             if(wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null){
+                                request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
+                        destination = ADD_WINE_PAGE;
+                        break;
 
-                        List<String> colNames = new ArrayList<>();
-                        colNames.add(WINE_NAME_COL);
-                        colNames.add(DATE_COL);
-                        colNames.add(WINE_PRICE_COL);
-                        colNames.add(WINE_IMG_URL_COL);
-                        List<Object> colValues = new ArrayList<>();
-                        colValues.add(wineName);
-                        colValues.add(date);
-                        colValues.add(winePrice);
-                        colValues.add(wineImgUrl);
-                        wineService.addNewWine(WINE_TABLE_NAME,
-                                colNames, colValues);
-                    } else {
-                        List<String> colNames2 = new ArrayList<>();
-                        colNames2.add(WINE_NAME_COL);
-                        colNames2.add(WINE_PRICE_COL);
-                        colNames2.add(WINE_IMG_URL_COL);
-                        List<Object> colValues2 = new ArrayList<>();
-                        colValues2.add(wineName);
-                        colValues2.add(winePrice);
-                        colValues2.add(wineImgUrl);
-                        wineService.updateWineById(WINE_TABLE_NAME, colNames2,
-                                colValues2, WINE_ID_COL, req_id);
+                            }
+                            colNames.add(WINE_NAME_COL);
+                            colNames.add(DATE_COL);
+                            colNames.add(WINE_PRICE_COL);
+                            colNames.add(WINE_IMG_URL_COL);
+                            List<Object> colValues = new ArrayList<>();
+                            colValues.add(wineName);
+                            colValues.add(date);
+                            colValues.add(winePrice);
+                            colValues.add(wineImgUrl);
+                            wineService.addNewWine(WINE_TABLE_NAME,
+                                    colNames, colValues);
+                        } else {
+                            //else it is an "edit" request bc it has an id
+                            List<String> colNamesEdit = new ArrayList<>();
+                            colNamesEdit.add(WINE_NAME_COL);
+                            colNamesEdit.add(WINE_PRICE_COL);
+                            colNamesEdit.add(WINE_IMG_URL_COL);
+                            List<Object> colValuesEdit = new ArrayList<>();
+                                 if(wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null){
+                                request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
+                        destination = EDIT_WINE_PAGE;
+                        break;
+
+                            }
+                            colValuesEdit.add(wineName);
+                            colValuesEdit.add(winePrice);
+                            colValuesEdit.add(wineImgUrl);
+                            wineService.updateWineById(WINE_TABLE_NAME, colNamesEdit,
+                                    colValuesEdit, WINE_ID_COL, req_id);
+                        }
+
+                    } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
+                        request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+                        destination = WINE_LIST_PAGE;
+
                     }
-                    
-                    } catch (InvalidParameterException e) {
-                      request.setAttribute(ERROR_MSG_KEY, e.getMessage());
-                        destination = WINE_LIST_PAGE;  
-                    }
-                    
+
                     refreshResults(request, wineService);
 
                     break;
 
                 case HOME_REQ:
 
-                  destination = HOME_PAGE;
+                    destination = HOME_PAGE;
                     break;
 
                 default:
-                   
-               destination = HOME_PAGE;            
+
+                    destination = HOME_PAGE;
                     break;
 
             }
+        } catch (InvalidParameterException e) {
+            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+        } catch (SQLException e) {
+            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
         } catch (Exception e) {
-            request.setAttribute("errMsg", e.getMessage());
-            destination = HOME_PAGE;
-            
+            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+
         }
-  
+
         RequestDispatcher view
                 = request.getRequestDispatcher(response.encodeURL(destination));
         view.forward(request, response);
@@ -228,7 +280,7 @@ public class WineController extends HttpServlet {
         from web.xml
      */
     private WineService injectDependenciesAndGetWineService() throws Exception {
-        
+
         Class dbClass = Class.forName(dbStrategyClassName);
         //  Java reflection instanntiatea the DBStrategy object
         DbAccessor db = (DbAccessor) dbClass.newInstance();
@@ -287,18 +339,21 @@ public class WineController extends HttpServlet {
 
         return new WineService(wineDao);
     }
-/**
- * helper method to refresh the wine list after adding, editing, or deleting a wine
- * @param request the request that was made (add, edit, delete)
- * @param wineService (wine service class to actually complete the request) 
- * @throws ClassNotFoundException
- * @throws SQLException 
- */
+
+    /**
+     * helper method to refresh the wine list after adding, editing, or deleting
+     * a wine
+     *
+     * @param request the request that was made (add, edit, delete)
+     * @param wineService (wine service class to actually complete the request)
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     private void refreshResults(HttpServletRequest request, WineService wineService)
             throws ClassNotFoundException, SQLException {
         List<Wine> wines = wineService.retrieveWineList(
-                WINE_TABLE_NAME, 50);
-        request.setAttribute("wines", wines);
+                WINE_TABLE_NAME, MAX_TABLE_ROWS);
+        request.setAttribute(WINE_LIST, wines);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -313,13 +368,6 @@ public class WineController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      
-         
-  
-        
-      
-  
-  
 
         processRequest(request, response);
     }
@@ -338,7 +386,6 @@ public class WineController extends HttpServlet {
         processRequest(request, response);
     }
 
-    
     /**
      * Returns a short description of the servlet.
      *
@@ -348,31 +395,29 @@ public class WineController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-/**
- * init method works for either connection pool or standard connections
- * @throws ServletException 
- */
+
+    /**
+     * init method works for either connection pool or standard connections
+     *
+     * @throws ServletException
+     */
     @Override
     public void init() throws ServletException {
-   
-        driverClass = getServletContext()
-                .getInitParameter("db.driver.class");
-        url = getServletContext()
-                .getInitParameter("db.url");
-        userName = getServletContext()
-                .getInitParameter("db.username");
-        password = getServletContext()
-                .getInitParameter("db.password");
 
-        dbStrategyClassName = getServletContext().getInitParameter("dbStrategy");
-        daoClassName = getServletContext().getInitParameter("wineDao");
-        jndiName = getServletContext().getInitParameter("connPoolName");
-     
+        driverClass = getServletContext()
+                .getInitParameter(DRIVER_CLASS_KEY);
+        url = getServletContext()
+                .getInitParameter(DATABASE_URL_KEY);
+        userName = getServletContext()
+                .getInitParameter(DATABASE_USERNAME_KEY);
+        password = getServletContext()
+                .getInitParameter(DATABASE_PASSWORD_KEY);
         
-            
-        
- 
+
+        dbStrategyClassName = getServletContext().getInitParameter(DB_STRATEGY_CLASS_NAME_KEY);
+        daoClassName = getServletContext().getInitParameter(DAO_CLASS_NAME_KEY);
+        jndiName = getServletContext().getInitParameter(DATABASE_JNDI_NAME_KEY);
+
     }
 
 }

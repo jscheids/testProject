@@ -22,18 +22,19 @@
     </head>
     <body>
         <jsp:include page ="adminHeader.jsp" />
-        
+
         <div class="container"> 
             <h1>Wine List</h1>
             <h2>
                 <p id="heading"> Current Wines</p>
-               
+
             </h2>
 
-            <form id="wineFormDelete" name="wineFormDelete" method="POST" action=<%=response.encodeURL("WineController?requestType=deleteWine")%>
-                  <br>
-                 <div id="buttons">
-                    <button type="submit" formaction="WineController?requestType=addWine" name="add" id="add">New Wine</button>
+            <form id="wineFormDelete" name="wineFormDelete" method="POST" action=<%=response.encodeURL("WineController?requestType=deleteWine")%>>
+                <p id="errorMsg">${errMsg}</p>
+                <br>
+                <div id="listButtons">
+                    <button type="submit" formaction=<%=response.encodeURL("WineController?requestType=addWine")%> name="add" id="add">New Wine</button>
                     <input type="submit" name="delete" id="delete" value="Delete">
                 </div>
                 <br>
@@ -67,7 +68,8 @@
                             <tr> 
 
                                 <td>
-                                    <button type="submit" formaction="WineController?requestType=editWine&id=${wine.wineID}" value="${wine.wineID}" name="editWine" id="editWine">Edit</button>
+
+                                    <button type="submit" formaction=<%=response.encodeURL("WineController?requestType=editWine")%> value="${wine.wineID}" name="editWine" id="editWine">Edit</button>
                                 </td>
                                 <td>
                                     <img class ='img-responsive' src="${pageContext.request.contextPath}/images/${wine.wineImgUrl}">
@@ -92,7 +94,7 @@
                         </c:forEach>             
                     </table>
                 </div>
-               
+
             </form>  
         </form>       
         <br>

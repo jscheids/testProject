@@ -1,9 +1,9 @@
-$().ready(function() {
-    
-     $("#editWineForm").validate({ // initialize the plugin
+$().ready(function () {
+
+    $("#editWineForm").validate({// initialize the plugin
 
         rules: {
-          
+
             wineName: {
                 required: true,
                 minlength: 1,
@@ -11,10 +11,10 @@ $().ready(function() {
 
             },
             winePrice: {
-                
+
                 required: true,
-                 range:[1.00,9999.99] 
-                
+                range: [1.00, 9999.99]
+
             },
             wineImgUrl: {
                 required: true,
@@ -23,22 +23,19 @@ $().ready(function() {
             }
 
         },
-        
+
         messages: {
             wineName: "Provide name value",
             winePrice: "Provide a value for price",
             wineImgUrl: "Provide the file name for the wine image. For example, logo.png",
-            
-         
-          
-            
+
         },
         errorPlacement: function (error, element) {
-             // This is the default behavior of the script for all fields
-                error.insertAfter(element);
-            
+            // This is the default behavior of the script for all fields
+            error.insertAfter(element);
+
         },
-      
+
     });
-   
+
 });
