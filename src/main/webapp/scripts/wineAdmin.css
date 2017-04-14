@@ -109,7 +109,7 @@ th {
 }
 
 .table tbody tr:hover td, .table tbody tr:hover th {
-    background-color: green;
+    background-color: #f2edca;
 }
 
 
