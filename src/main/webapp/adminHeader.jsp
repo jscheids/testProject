@@ -6,7 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-
+<header>
 
     <nav class="navbar navbar-default navbar-static-top" style="background-color: #f1dba9;">
 

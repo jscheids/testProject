@@ -130,13 +130,13 @@ public class WineController extends HttpServlet {
                     List<Wine> wines = new ArrayList<>(); 
                     try {
                       wines = wineService.retrieveWineList(WINE_TABLE_NAME, MAX_TABLE_ROWS);
-                        destination = WINE_LIST_PAGE;
-                      request.setAttribute(WINE_LIST, wines);
                       
                     } catch (InvalidParameterException | SQLException |ClassNotFoundException e ) {
                         request.setAttribute(ERROR_MSG_KEY, e.getMessage());
                         destination = HOME_PAGE;
                     }
+                      destination = WINE_LIST_PAGE;
+                      request.setAttribute(WINE_LIST, wines);
                     break;
 
                 case DELETE_WINE_REQ:
@@ -146,9 +146,7 @@ public class WineController extends HttpServlet {
                         try {
                             for (String id : wineToDelete) {
                                 wineService.deleteWineById(WINE_TABLE_NAME, WINE_ID_COL, id);
-                               
                             }
-                              refreshResults(request, wineService);
                         } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
                             request.setAttribute(ERROR_MSG_KEY, e.getMessage());
                             destination = WINE_LIST_PAGE;
@@ -156,7 +154,7 @@ public class WineController extends HttpServlet {
                         }
                     }
 
-                   
+                    refreshResults(request, wineService);
                     break;
 
                 case ADD_WINE_REQ:
@@ -180,15 +178,8 @@ public class WineController extends HttpServlet {
                     }
                     break;
                     case CANCEL_REQ:
-                        try{
                     this.refreshResults(request, wineService);
-                       destination = WINE_LIST_PAGE;
-                        }
-                        catch (InvalidParameterException e) {
-                        request.setAttribute(ERROR_MSG_KEY, e.getMessage());
-                        destination = WINE_LIST_PAGE;
-
-                    }   
+                    destination = WINE_LIST_PAGE;
                     break; 
 
                     
@@ -210,7 +201,7 @@ public class WineController extends HttpServlet {
                            // if(wineName.isEmpty() || wineName == null){
                            //     wineName = "no name";
                            // }
-                          // this is validation that prevents empty vaules from being put in at the UI. Useful if JS is turned off and Jquery validation doesn't run  
+                           
                              if(wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null){
                                 request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
                         destination = ADD_WINE_PAGE;
@@ -247,7 +238,6 @@ public class WineController extends HttpServlet {
                             wineService.updateWineById(WINE_TABLE_NAME, colNamesEdit,
                                     colValuesEdit, WINE_ID_COL, req_id);
                         }
-  refreshResults(request, wineService);
 
                     } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
                         request.setAttribute(ERROR_MSG_KEY, e.getMessage());
@@ -255,7 +245,8 @@ public class WineController extends HttpServlet {
 
                     }
 
-                  
+                    refreshResults(request, wineService);
+
                     break;
 
                 case HOME_REQ:
@@ -357,14 +348,9 @@ public class WineController extends HttpServlet {
      * @param wineService (wine service class to actually complete the request)
      * @throws ClassNotFoundException
      * @throws SQLException
-     * @throws InvalidParameterException 
      */
     private void refreshResults(HttpServletRequest request, WineService wineService)
-          
-            throws ClassNotFoundException, SQLException, InvalidParameterException {
-          if (request == null || wineService == null ){
-              throw new InvalidParameterException(); 
-          }
+            throws ClassNotFoundException, SQLException {
         List<Wine> wines = wineService.retrieveWineList(
                 WINE_TABLE_NAME, MAX_TABLE_ROWS);
         request.setAttribute(WINE_LIST, wines);
