@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.wctc.jls.MyEcomApp.model;
+package edu.wctc.jls.MyEcomApp.entity;
 
 import edu.wctc.jls.exeption.InvalidParameterException;
 import java.io.File;

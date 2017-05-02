@@ -1,5 +1,5 @@
 
-package edu.wctc.jls.MyEcomApp.model;
+package edu.wctc.jls.MyEcomApp.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
