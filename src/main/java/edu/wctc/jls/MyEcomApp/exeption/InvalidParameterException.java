@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.wctc.jls.exeption;
+package edu.wctc.jls.MyEcomApp.exeption;
 
 /**
  * Custom exception class for invalid parameters

@@ -39,7 +39,7 @@
     <!-- Spring managed EntityManager configuration -->
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="wine_PU"/>
+        <property name="persistenceUnitName" value="wine"/>
         <property name="packagesToScan" value="edu.wctc.jls.MyEcomApp.entity"/>
         <property name="dataSource" ref="dataSource" />
         <property name="jpaVendorAdapter">

@@ -3,7 +3,7 @@ package edu.wctc.jls.MyEcomApp.controller;
 import edu.wctc.jls.MyEcomApp.entity.Wine;
 import edu.wctc.jls.MyEcomApp.entity.DateHelper;
 import edu.wctc.jls.MyEcomApp.service.WineService;
-import edu.wctc.jls.exeption.InvalidParameterException;
+import edu.wctc.jls.MyEcomApp.exeption.InvalidParameterException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -14,12 +14,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -30,7 +35,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author Jennifer
  */
-//@WebServlet(name = "WineController", urlPatterns = {"/WineController"})
+@WebServlet(name = "WineController", urlPatterns = {"/WineController"})
 public class WineController extends HttpServlet {
 
     private static final String REQ_TYPE = "requestType";
@@ -88,8 +93,8 @@ public class WineController extends HttpServlet {
         String destination = HOME_PAGE;
 
         String req_Action = request.getParameter(REQ_TYPE);
-        
-        Wine wine = null; 
+
+        Wine wine = null;
 
         try {
 
@@ -98,9 +103,9 @@ public class WineController extends HttpServlet {
                 case WINE_LIST_REQ:
 
                     try {
-                      //  List<Wine> wines = wineService.findAll();
-                        destination = "/test.jsp";
-                       // request.setAttribute(WINE_LIST, wines);
+                        List<Wine> wines = wineService.findAll();
+                        destination = WINE_LIST_PAGE;
+                        request.setAttribute(WINE_LIST, wines);
 
                     } catch (InvalidParameterException e) {
                         request.setAttribute(ERROR_MSG_KEY, e.getMessage());
@@ -114,8 +119,8 @@ public class WineController extends HttpServlet {
                     if (wineToDelete != null) {
                         try {
                             for (String id : wineToDelete) {
-                                //wineService.deleteById(id);
-                              wine = wineService.findById(id);
+
+                                wine = wineService.findById(id);
                                 wineService.remove(wine);
 
                             }
@@ -194,11 +199,26 @@ public class WineController extends HttpServlet {
                             // need to move, for now just doing it here to get it done
                             BigDecimal bigDecimalValue = new BigDecimal(winePrice);
                             wine.setWinePrice(bigDecimalValue);
-                           wine.setWineImgUrl(wineImgUrl);
+                            wine.setWineImgUrl(wineImgUrl);
                             wine.setDateAdded(new Date());
-                            //wineService.addNewWine(wineName, winePrice, wineImgUrl);
+                            wineService.edit(wine);
                         } else {
                             //else it is an "edit" request bc it has an id
+                            wine = wineService.findById(req_id);
+                            wine.setWineName(wineName);
+
+                            // need to move, for now just doing it here to get it done
+                            BigDecimal bigDecimalValue = new BigDecimal(winePrice);
+                            wine.setWinePrice(bigDecimalValue);
+                            wine.setWineImgUrl(wineImgUrl);
+                            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+
+                            try {
+                                Date date = format.parse(dateAdded);
+                                wine.setDateAdded(date);
+                            } catch (ParseException ex) {
+                                Logger.getLogger(WineController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
                             //server side validation in event of client side validation failure
                             if (wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null) {

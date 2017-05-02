@@ -5,7 +5,7 @@
  */
 package edu.wctc.jls.MyEcomApp.entity;
 
-import edu.wctc.jls.exeption.InvalidParameterException;
+import edu.wctc.jls.MyEcomApp.exeption.InvalidParameterException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
