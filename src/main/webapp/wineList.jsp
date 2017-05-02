@@ -69,13 +69,13 @@
 
                                 <td>
 
-                                    <button type="submit" formaction=<%=response.encodeURL("WineController?requestType=editWine")%> value="${wine.wineID}" name="editWine" id="editWine">Edit</button>
+                                    <button type="submit" formaction=<%=response.encodeURL("WineController?requestType=editWine")%> value="${wine.wineId}" name="editWine" id="editWine">Edit</button>
                                 </td>
                                 <td>
                                     <img class ='img-responsive' src="${pageContext.request.contextPath}/images/${wine.wineImgUrl}">
                                 </td>
                                 <td>
-                                    ${wine.wineID}
+                                    ${wine.wineId}
                                 </td>
                                 <td>
                                     ${wine.wineName}
@@ -87,7 +87,7 @@
                                     <fmt:formatDate pattern="M/d/yyyy" value="${wine.dateAdded}"/>                                 
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="wineId" value="${wine.wineID}">
+                                    <input type="checkbox" name="wineId" value="${wine.wineId}">
                                 </td>        
                             </tr>     
 

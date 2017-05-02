@@ -29,7 +29,7 @@
             <form id="editWineForm" name="editWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
 
                 <br>
-                <p id="errorMsg">${errMsg}</p>
+                <p id="errorMsg"> Error: ${errMsg} </p>
                 <table class="table">  
                     <tr>
                         <td>

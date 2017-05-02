@@ -1,206 +1,132 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package edu.wctc.jls.MyEcomApp.model;
 
-import edu.wctc.jls.exeption.InvalidParameterException;
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is a domain/entity object reprsenting wine.
- *
+ * note on declaring methods final and validating parameters- 
+ * in Lecture 17 at the 1:00 mark, instructor says that declaring final problems with JPA and will return to it in the future. 
+ * For validation, says to use annotation. 
  * @author Jennifer
  */
-public class Wine {
+@Entity
+@Table(name = "wine")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Wine.findAll", query = "SELECT w FROM Wine w")
+    , @NamedQuery(name = "Wine.findByWineId", query = "SELECT w FROM Wine w WHERE w.wineId = :wineId")
+    , @NamedQuery(name = "Wine.findByWineName", query = "SELECT w FROM Wine w WHERE w.wineName = :wineName")
+    , @NamedQuery(name = "Wine.findByWineImgUrl", query = "SELECT w FROM Wine w WHERE w.wineImgUrl = :wineImgUrl")
+    , @NamedQuery(name = "Wine.findByDateAdded", query = "SELECT w FROM Wine w WHERE w.dateAdded = :dateAdded")
+    , @NamedQuery(name = "Wine.findByWinePrice", query = "SELECT w FROM Wine w WHERE w.winePrice = :winePrice")})
+public class Wine implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "wine_id")
+    private Integer wineId;
+    @Size(max = 80)
+    @Column(name = "wine_name")
     private String wineName;
-    private Integer wineID;
-    private double winePrice;
+    @Size(max = 80)
+    @Column(name = "wine_img_url")
     private String wineImgUrl;
+    @Column(name = "date_added")
+    @Temporal(TemporalType.DATE)
     private Date dateAdded;
-    private static final int MIN_VALUE = 0;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "wine_price")
+    private BigDecimal winePrice;
 
-    /**
-     * Default Constructor
-     */
     public Wine() {
     }
 
-    /**
-     * getter for wineName.
-     *
-     * @return String
-     */
-    public final String getWineName() {
+    public Wine(Integer wineId) {
+        this.wineId = wineId;
+    }
+
+    public Integer getWineId() {
+        return wineId;
+    }
+
+    public void setWineId(Integer wineId) {
+        this.wineId = wineId;
+    }
+
+    public String getWineName() {
         return wineName;
     }
 
-    /**
-     * setter for wineName. Name may not be empty or null
-     *
-     * @param wineName
-     * @throws InvalidParameterException
-     */
-    public final void setWineName(String wineName) {
-        if (wineName.isEmpty() || wineName == null) {
-            throw new InvalidParameterException();
-        }
+    public void setWineName(String wineName) {
         this.wineName = wineName;
     }
 
-    /**
-     * getter for wineID
-     *
-     * @return Integer
-     */
-    public final Integer getWineID() {
-        return wineID;
-    }
-
-    /**
-     * setter for wine id. May not be less than 0
-     *
-     * @param wineID
-     * @throws InvalidParameterException
-     */
-    public final void setWineID(Integer wineID) {
-        if (wineID < MIN_VALUE) {
-            throw new InvalidParameterException();
-        }
-        this.wineID = wineID;
-    }
-
-    /**
-     * getter for winePrice
-     *
-     * @return double
-     */
-    public final double getWinePrice() {
-
-        return winePrice;
-    }
-
-    /**
-     * setter for wine price. May not be less than 0
-     *
-     * @param winePrice
-     * @throws InvalidParameterException
-     */
-    public final void setWinePrice(double winePrice) {
-
-        this.winePrice = winePrice;
-    }
-
-    /**
-     * getter for wine img url
-     *
-     * @return String
-     */
-    public final String getWineImgUrl() {
-        ImageFileHelper imgHelper = new ImageFileHelper(wineImgUrl);
-        wineImgUrl = imgHelper.wineImgFileChecker(wineImgUrl);
+    public String getWineImgUrl() {
+        //ImageFileHelper imgHelper = new ImageFileHelper(wineImgUrl);
+       // wineImgUrl = imgHelper.wineImgFileChecker(wineImgUrl);
         return wineImgUrl;
     }
 
-    /**
-     * setter for wine img url.May not be empty or null
-     *
-     * @param wineImgUrl
-     * @throws InvalidParameterException
-     */
-    public final void setWineImgUrl(String wineImgUrl) {
-        if (wineImgUrl.isEmpty() || wineImgUrl == null) {
-            throw new InvalidParameterException();
-        }
-
+    public void setWineImgUrl(String wineImgUrl) {
         this.wineImgUrl = wineImgUrl;
     }
 
-    /**
-     * getter for date added.
-     *
-     * @return Date
-     */
-    public final Date getDateAdded() {
+    public Date getDateAdded() {
         return dateAdded;
     }
 
-    /**
-     * setter for dateAdded. May not be null.
-     *
-     * @param dateAdded
-     * @throws InvalidParameterException
-     */
-    public final void setDateAdded(Date dateAdded) {
-        if (dateAdded == null) {
-            throw new InvalidParameterException();
-        }
+    public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
     }
 
-    /**
-     * Overridden hashCode
-     *
-     * @return int
-     */
+    public BigDecimal getWinePrice() {
+        return winePrice;
+    }
+
+    public void setWinePrice(BigDecimal winePrice) {
+        this.winePrice = winePrice;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.wineName);
-        hash = 67 * hash + Objects.hashCode(this.wineID);
-        hash = 67 * hash + (int) (Double.doubleToLongBits(this.winePrice) ^ (Double.doubleToLongBits(this.winePrice) >>> 32));
-        hash = 67 * hash + Objects.hashCode(this.wineImgUrl);
-        hash = 67 * hash + Objects.hashCode(this.dateAdded);
+        int hash = 0;
+        hash += (wineId != null ? wineId.hashCode() : 0);
         return hash;
     }
 
-    /**
-     * Overriden equals
-     *
-     * @param obj
-     * @return
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Wine)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Wine other = (Wine) obj;
-        if (Double.doubleToLongBits(this.winePrice) != Double.doubleToLongBits(other.winePrice)) {
-            return false;
-        }
-        if (!Objects.equals(this.wineName, other.wineName)) {
-            return false;
-        }
-        if (!Objects.equals(this.wineImgUrl, other.wineImgUrl)) {
-            return false;
-        }
-        if (!Objects.equals(this.wineID, other.wineID)) {
-            return false;
-        }
-        if (!Objects.equals(this.dateAdded, other.dateAdded)) {
+        Wine other = (Wine) object;
+        if ((this.wineId == null && other.wineId != null) || (this.wineId != null && !this.wineId.equals(other.wineId))) {
             return false;
         }
         return true;
     }
 
-    /**
-     * overriden toString
-     *
-     * @return String
-     */
     @Override
-    public final String toString() {
-        return "Wine{" + "wineID=" + wineID + ", wineName=" + wineName + ", winePrice=" + winePrice + ", wineImgUrl=" + wineImgUrl + ", dateAddes=" + dateAdded + '}';
+    public String toString() {
+        return "edu.wctc.jls.MyEcomApp.model.Wine[ wineId=" + wineId + " ]";
     }
-
+    
 }
