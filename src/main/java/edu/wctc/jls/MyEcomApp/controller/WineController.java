@@ -6,7 +6,6 @@ import edu.wctc.jls.MyEcomApp.service.WineService;
 import edu.wctc.jls.exeption.InvalidParameterException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,17 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
-import java.lang.reflect.Constructor;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.EJB;
+
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -35,7 +30,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author Jennifer
  */
-@WebServlet(name = "WineController", urlPatterns = {"/WineController"})
+//@WebServlet(name = "WineController", urlPatterns = {"/WineController"})
 public class WineController extends HttpServlet {
 
     private static final String REQ_TYPE = "requestType";
@@ -57,10 +52,6 @@ public class WineController extends HttpServlet {
 
     //database variables 
     private static final String WINE_EDIT_ID = "editWine";
-    private static final String WINE_NAME_COL = "wine_name";
-    private static final String DATE_COL = "date_added";
-    private static final String WINE_PRICE_COL = "wine_price";
-    private static final String WINE_IMG_URL_COL = "wine_img_url";
 
     //different types of requests that may come in from the UI
     private static final String WINE_LIST_REQ = "wineList";
@@ -74,6 +65,7 @@ public class WineController extends HttpServlet {
     //error/validation messagining
     private static final String ERROR_MSG_KEY = "errMsg";
     private static final String MISSING_INPUT_MSG = "Please ensure all fields have values before saving the record.";
+    private static final long serialVersionUID = 1L;
 
     private WineService wineService;
 
@@ -96,6 +88,8 @@ public class WineController extends HttpServlet {
         String destination = HOME_PAGE;
 
         String req_Action = request.getParameter(REQ_TYPE);
+        
+        Wine wine = null; 
 
         try {
 
@@ -103,11 +97,10 @@ public class WineController extends HttpServlet {
 
                 case WINE_LIST_REQ:
 
-                    List<Wine> wines = new ArrayList<>();
                     try {
-                        wines = wineService.findAll();
-                        destination = WINE_LIST_PAGE;
-                        request.setAttribute(WINE_LIST, wines);
+                      //  List<Wine> wines = wineService.findAll();
+                        destination = "/test.jsp";
+                       // request.setAttribute(WINE_LIST, wines);
 
                     } catch (InvalidParameterException e) {
                         request.setAttribute(ERROR_MSG_KEY, e.getMessage());
@@ -122,7 +115,7 @@ public class WineController extends HttpServlet {
                         try {
                             for (String id : wineToDelete) {
                                 //wineService.deleteById(id);
-                               Wine wine = wineService.findById(id); 
+                              wine = wineService.findById(id);
                                 wineService.remove(wine);
 
                             }
@@ -144,8 +137,8 @@ public class WineController extends HttpServlet {
                     destination = EDIT_WINE_PAGE;
                     String id = request.getParameter(WINE_EDIT_ID);
                     try {
-                       // Wine wine = wineService.find(new Integer(id));
-                        Wine wine = wineService.findById(id);
+                        // Wine wine = wineService.find(new Integer(id));
+                        wine = wineService.findById(id);
                         request.setAttribute(WINE_ID, wine.getWineId());
                         request.setAttribute(WINE_NAME, wine.getWineName());
                         request.setAttribute(WINE_PRICE, wine.getWinePrice());
@@ -176,17 +169,16 @@ public class WineController extends HttpServlet {
                     try {
 
                         String wineName = request.getParameter(WINE_NAME);
-
+                        String dateAdded = request.getParameter(DATE_ADDED);
                         String winePrice = request.getParameter(WINE_PRICE);
                         String req_id = request.getParameter(WINE_ID);
                         String wineImgUrl = request.getParameter(WINE_IMG_URL);
-                        
+
 // if id is not there, it must be a new
+//consider moving date to wine class- doesn't belong in controller imo. Look at midterm to see what I did. 
                         if (req_id == null || req_id.isEmpty()) {
                             DateHelper dh = new DateHelper();
                             String date = dh.getCurrentDate();
-
-                            List<String> colNames = new ArrayList<>();
 
                             // this is validation that prevents empty vaules from being put in at the UI. Useful if JS is turned off and Jquery validation doesn't run  
                             if (wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null) {
@@ -195,41 +187,26 @@ public class WineController extends HttpServlet {
                                 break;
 
                             }
-                            colNames.add(WINE_NAME_COL);
-                            colNames.add(DATE_COL);
-                            colNames.add(WINE_PRICE_COL);
-                            colNames.add(WINE_IMG_URL_COL);
-                            List<Object> colValues = new ArrayList<>();
-                            colValues.add(wineName);
-                            colValues.add(date);
-                            colValues.add(winePrice);
-                            colValues.add(wineImgUrl);
-                            Wine newWine = new Wine(0);
-                            newWine.setWineName(wineName);
-                            
+
+                            wine = new Wine(0);
+                            wine.setWineName(wineName);
+
                             // need to move, for now just doing it here to get it done
-                            BigDecimal bigDecimalValue= new BigDecimal(winePrice);
-                            newWine.setWinePrice(bigDecimalValue);
-                            newWine.setWineImgUrl(wineImgUrl);
-                            newWine.setDateAdded(new Date());
+                            BigDecimal bigDecimalValue = new BigDecimal(winePrice);
+                            wine.setWinePrice(bigDecimalValue);
+                           wine.setWineImgUrl(wineImgUrl);
+                            wine.setDateAdded(new Date());
                             //wineService.addNewWine(wineName, winePrice, wineImgUrl);
                         } else {
                             //else it is an "edit" request bc it has an id
-                            List<String> colNamesEdit = new ArrayList<>();
-                            colNamesEdit.add(WINE_NAME_COL);
-                            colNamesEdit.add(WINE_PRICE_COL);
-                            colNamesEdit.add(WINE_IMG_URL_COL);
-                            List<Object> colValuesEdit = new ArrayList<>();
+
                             //server side validation in event of client side validation failure
                             if (wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null) {
                                 request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
                                 break;
                             }
 
-                            colValuesEdit.add(wineName);
-                            colValuesEdit.add(winePrice);
-                            colValuesEdit.add(wineImgUrl);
-                            wineService.editWine(req_id, wineName, winePrice, wineImgUrl);
+                            wineService.edit(wine);
                         }
                         refreshResults(request, wineService);
 
