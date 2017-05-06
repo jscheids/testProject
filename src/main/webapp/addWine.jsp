@@ -8,20 +8,23 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="scripts/wineAdmin.css">
-        <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:700|Cormorant+Upright:400,700|Proza+Libre" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
 
     </head>
     <body>
         <jsp:include page ="adminHeader.jsp" />
 
-        <div class="container"> 
-            <h1>Add Wine</h1> <br> 
+        <div class="container">
+            <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
+            <sec:authorize access="hasAnyRole('ROLE_MGR')">
+            <h1>Add Wine</h1>  
             <h3>
                 Please enter all information:
             </h3><br> 
@@ -62,6 +65,7 @@
                 <br>
                 <br>
             </form>
+                        </sec:authorize>
         </div>   
 
         <jsp:include page ="adminFooter.jsp" />

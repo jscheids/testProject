@@ -10,16 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This is a special Spring-enabled service class that delegates work to 
- * various Spring managed repository objects using special spring annotations
- * to perform dependency injection, and special annotations for transactions.
- * It also uses SLF4j to provide logging features.
- * 
- * Don't confuse the Spring @Respository annotation with the repository
- * classes (AuthorRepository, BookRespository). The annotation here is used 
- * solely to tell Spring to translate any exception messages into more
- * user friendly text. Any class annotated that way will do that.
- * 
+ * Spring-enabled service class that delegates work to different Spring managed repository objects via the use of spring annotations to perform dependency injection.
+ * Also uses annotations for transactions.
+ * Uses SLF4j to provide logging features.
  * @author jennifer 
  */
 @Service
@@ -31,6 +24,8 @@ public class WineService {
     @Inject
     private WineRepository wineRepo;
 
+     @Inject 
+    private DeleteNotificationEmailSender deleteNoticeEmailSender; 
   
     public WineService() {
     }
@@ -38,7 +33,11 @@ public class WineService {
     public List<Wine> findAll() {
         return wineRepo.findAll();
     }
-
+/**
+ * Retrieve a single wine by id
+ * @param id the id of the wine being searched 
+ * @return a single wine object 
+ */
     public Wine findById(String id) {
         return wineRepo.findOne(new Integer(id));
     }
@@ -46,22 +45,48 @@ public class WineService {
     /**
      * Spring performs a transaction with readonly=false. This
      * guarantees a rollback if something goes wrong.
-     * @param wine 
+     * @param wine the wine object that is being removed 
      */
     @Transactional
     public void remove(Wine wine ) {
         LOG.debug("Deleting wine: " + wine.getWineName());
         wineRepo.delete(wine);
+          deleteNoticeEmailSender.sendEmail("Wine", wine.getWineName());
     }
 
     /**
      * Spring performs a transaction with readonly=false. This
      * guarantees a rollback if something goes wrong.
-     * @param wine 
+     * @param wine wine object to be edited
      */
     @Transactional
     public Wine edit(Wine wine) {
-        return wineRepo.saveAndFlush(wine);
+        return wineRepo.saveAndFlush(wine);  
+    }
+    /**
+     * 
+     * @param id
+     * @param wineName 
+     * @return 
+     */
+      public List<Wine> searchByWineIdAndName(Integer id, String wineName) {
+        return wineRepo.searchByWineIdAndName(id, wineName);        
+    }
+/**
+ * 
+ * @param wineName
+ * @return 
+ */
+    public List<Wine> searchByName(String wineName) {
+        return wineRepo.searchByName(wineName);        
+    }
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+     public List<Wine> searchByWineId(Integer id) {
+        return wineRepo.searchByWineId(id);
     }
 }
 

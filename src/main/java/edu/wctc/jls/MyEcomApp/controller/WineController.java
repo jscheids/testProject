@@ -45,6 +45,7 @@ public class WineController extends HttpServlet {
     private static final String WINE_LIST_PAGE = "/wineList.jsp";
     private static final String ADD_WINE_PAGE = "/addWine.jsp";
     private static final String EDIT_WINE_PAGE = "/editWine.jsp";
+    private static final String WINE_SEARCH_PAGE = "/wineSearch.jsp";
 
     //these are the values "grabbed" from the page
     private static final String WINE_ID = "wineId";
@@ -65,7 +66,9 @@ public class WineController extends HttpServlet {
     private static final String SAVE_REQ = "saveWine";
     private static final String DELETE_WINE_REQ = "deleteWine";
     private static final String CANCEL_REQ = "cancel";
+    private static final String SEARCH_REQ = "search";
     private static final String HOME_REQ = "home";
+    private static final String ENTER_SEARCH_REQ = "enterSearch";
 
     //error/validation messagining
     private static final String ERROR_MSG_KEY = "errMsg";
@@ -236,6 +239,36 @@ public class WineController extends HttpServlet {
 
                     }
 
+                    break;
+
+                case SEARCH_REQ:
+                    List<Wine> wines = null;
+                    String wineId = request.getParameter("wine");
+                    Integer wId = new Integer(wineId);
+
+                    String wineName = request.getParameter("wineName");
+                    if (wineId.equals("All")) {
+                        if (!(wineName.isEmpty())) {
+                            wines = wineService.searchByName(wineName);
+                        }
+                    } else if ((!(wineId.equals("All"))) && (!(wineName.isEmpty()))) {
+
+                        wines = wineService.searchByWineIdAndName(wId, wineName);
+                    } else {
+                    //    wines= wineService.searchByName(wineName);
+                        wines = wineService.searchByWineId(wId);
+                    }
+
+                    request.setAttribute(WINE_LIST, wines);
+                    destination = WINE_LIST_PAGE;
+                    break;
+
+                case ENTER_SEARCH_REQ:
+                    
+                    wines = wineService.findAll();
+                        destination = WINE_LIST_PAGE;
+                        request.setAttribute(WINE_LIST, wines);
+                    destination = WINE_SEARCH_PAGE;
                     break;
 
                 case HOME_REQ:
