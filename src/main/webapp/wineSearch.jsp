@@ -31,7 +31,7 @@
         <p><b>Please Enter Search Criteria:</p>
         <br>
 
-        <form method="POST" action="WineController?requestType=search">
+        <form method="POST" id="formWineSearch" action="WineController?requestType=search">
            
            
 <table class="table" id="searchTable">  
@@ -41,7 +41,7 @@
                             Product ID:   
                         </td>
                         <td>
-                           <select id='wine' name='wine'>
+                           <select id="wineSearchId" name="wineSearchId">
                             <option value='All' selected>All</option>
                             <c:forEach var="wine" items="${wines}" varStatus="rowCount">
                                 <option value='${wine.wineId}'>${wine.wineId}</option>
@@ -49,10 +49,15 @@
                         </select>
                         </td>
                       <td><b>Wine Name (all or starting with): </b></td>
-                    <td><input type='text' id="wineName" name='wineName' value="${wineName}"/></td>
+                    <td><input type='text' id="wineSearchName" name="wineSearchName"/></td>
                        
                     </tr>
-
+                    <tr> 
+<td><b>Min Price: </b></td>
+                    <td><input type='text' id="wineSearchMinPrice" name="wineSearchMinPrice"/></td>
+                    <td><b>Max Price: </b></td>
+                    <td><input type='text' id="wineSearchMaxPrice" name="wineSearchMaxPrice"/></td>
+        </tr> 
                 </table> 
             
             
@@ -71,8 +76,15 @@
             More coming soon! 
         </div>
             <jsp:include page ="adminFooter.jsp" /> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+            
+              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+              <script scr="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="jquery_3.2.0.js" type="text/javascript"></script>                 
+        <script src="scripts/jqueryValidationCore.js" type="text/javascript"></script>
+        <script src="scripts/wineSearchValidation.js" type="text/javascript"></script>
+
     </body>
 </html>
 

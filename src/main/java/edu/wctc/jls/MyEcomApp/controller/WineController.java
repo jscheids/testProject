@@ -243,31 +243,69 @@ public class WineController extends HttpServlet {
 
                 case SEARCH_REQ:
                     List<Wine> wines = null;
-                    String wineId = request.getParameter("wine");
-                    Integer wId = new Integer(wineId);
+                    String wineSearchMinPrice;
+                    String wineSearchMaxPrice;
+                    String wineId = request.getParameter("wineSearchId");
 
-                    String wineName = request.getParameter("wineName");
+                    String wineName = request.getParameter("wineSearchName");
+                    wineSearchMinPrice = request.getParameter("wineSearchMinPrice");
+                    wineSearchMaxPrice = request.getParameter("wineSearchMaxPrice");
                     if (wineId.equals("All")) {
-                        if (!(wineName.isEmpty())) {
+                        if ((wineName.length() >= 1) && (wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty())) {
                             wines = wineService.searchByName(wineName);
+                        }} else if ((wineId.equals("All"))) {
+                            if ((!(wineSearchMinPrice.isEmpty()) && (!(wineSearchMinPrice.isEmpty() && wineName.isEmpty())))) {
+                                wines = wineService.searchByWinePrice(wineSearchMinPrice, wineSearchMaxPrice);
+                            }
+                        } else if (wineId.equals("All")) {
+                            if ((!(wineSearchMinPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
+                                 wines= wineService.searchByWineNameAndPrice(wineName, wineSearchMinPrice, wineSearchMaxPrice); 
+                            }
                         }
-                    } else if ((!(wineId.equals("All"))) && (!(wineName.isEmpty()))) {
+                        else if (wineId.equals("All")) {
+                            if (wineSearchMinPrice.isEmpty() && wineSearchMinPrice.isEmpty() && wineName.isEmpty()) {
+                                wines= wineService.findAll(); 
+                            }
+                        }
+                        
+                        else if ((!(wineId.equals("All")))) {
+                            if ((!(wineName.isEmpty())) && wineSearchMaxPrice.isEmpty()) {
+                                Integer wId = new Integer(wineId);
+                                wines = wineService.searchByWineIdAndName(wId, wineName);
+                            }
+                        } else if ((!(wineId.equals("All")))) {
+                            if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && wineName.isEmpty()) {
+                                Integer wId = new Integer(wineId);
+                                 wines = wineService.searchByWineIdAndPrice(wId, wineSearchMinPrice, wineSearchMaxPrice);
+                            }
+                        } else if ((!(wineId.equals("All")))) {
+                            if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
+                                Integer wId = new Integer(wineId);
+                                 wines = wineService.searchByWineIdAndNameAndPrice(wId,wineName, wineSearchMinPrice, wineSearchMaxPrice);
+                            }
+                        }
+                            else if ((!(wineId.equals("All")))) {
+                            if ((wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty()) && (wineName.isEmpty())) {
+                                Integer wId = new Integer(wineId);
+                                wines= wineService.searchByWineId(wId); 
+                            }
+                            }
+                            
+                            else 
+                                wines= wineService.findAll(); 
+                                     
+                            
 
-                        wines = wineService.searchByWineIdAndName(wId, wineName);
-                    } else {
-                    //    wines= wineService.searchByName(wineName);
-                        wines = wineService.searchByWineId(wId);
-                    }
 
                     request.setAttribute(WINE_LIST, wines);
                     destination = WINE_LIST_PAGE;
                     break;
 
                 case ENTER_SEARCH_REQ:
-                    
+
                     wines = wineService.findAll();
-                        destination = WINE_LIST_PAGE;
-                        request.setAttribute(WINE_LIST, wines);
+                    destination = WINE_LIST_PAGE;
+                    request.setAttribute(WINE_LIST, wines);
                     destination = WINE_SEARCH_PAGE;
                     break;
 
@@ -286,6 +324,7 @@ public class WineController extends HttpServlet {
 
         RequestDispatcher view
                 = request.getRequestDispatcher(response.encodeURL(destination));
+
         view.forward(request, response);
     }
 

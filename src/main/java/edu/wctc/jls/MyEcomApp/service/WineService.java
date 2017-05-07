@@ -2,6 +2,7 @@ package edu.wctc.jls.MyEcomApp.service;
 
 import edu.wctc.jls.MyEcomApp.entity.Wine;
 import edu.wctc.jls.MyEcomApp.repository.WineRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -88,5 +89,28 @@ public class WineService {
      public List<Wine> searchByWineId(Integer id) {
         return wineRepo.searchByWineId(id);
     }
+     public List<Wine> searchByWinePrice(String minPrice, String maxPrice) {
+         BigDecimal minPriceDec = new BigDecimal(minPrice);
+     BigDecimal maxPriceDec = new BigDecimal(maxPrice);
+        return wineRepo.searchByPrice(minPriceDec, maxPriceDec);  
+}
+     public List <Wine> searchByWineIdAndNameAndPrice(Integer id, String wineName, String minPrice, String maxPrice){
+         BigDecimal minPriceDec = new BigDecimal(minPrice);
+     BigDecimal maxPriceDec = new BigDecimal(maxPrice);
+     return wineRepo.searchByWineIdAndNameAndPrice(id, wineName, minPriceDec, maxPriceDec);
+     }
+     
+   public List <Wine> searchByWineIdAndPrice(Integer id, String minPrice, String maxPrice){
+         BigDecimal minPriceDec = new BigDecimal(minPrice);
+     BigDecimal maxPriceDec = new BigDecimal(maxPrice);
+     return wineRepo.searchByWineIdAndPrice(id, minPriceDec, maxPriceDec);
+     }  
+   
+   public List <Wine> searchByWineNameAndPrice(String wineName, String minPrice, String maxPrice){
+       BigDecimal minPriceDec = new BigDecimal(minPrice);
+     BigDecimal maxPriceDec = new BigDecimal(maxPrice);
+     return wineRepo.searchByWineNameAndPrice(wineName, minPriceDec, maxPriceDec);
+   
 }
 
+}
