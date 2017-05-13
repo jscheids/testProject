@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat Room</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="resources/styles.css" type="text/css"/>
+        
+    </head>
+    
+    <!--
+        Though not your only option a common practice is to open a connection 
+        to a websocket endpoint when the page loads and then disconnect when 
+        the page unloads. WebSockets are much more efficient than HTTP 
+        connections and can be left open indefinitely. It is also possible to 
+        open more than one websocket connection, in which case you would 
+        have to modify your open/close technique.
+    -->
+    <body onload="connect();" onunload="disconnect();">
+        <h1> Chat Room </h1>
+        <textarea id="messages" class="panel message-area" disabled></textarea>
+        <div class="panel input-area">
+            <input id="userName" class="text-field" type="text" placeholder="Name"/>
+            
+            <!-- Optionally recognize the ENTER key as a Send Button press -->
+            <input id="messageInput" class="text-field" type="text" placeholder="Message"
+                   onkeydown="if (event.keyCode == 13) sendMessage();" />
+            
+            <!-- Send a websocket message to the endpoint on click -->
+            <input class="button" type="submit" value="Send" onclick="sendMessage();" />
+        </div>
+        <p>Click here to go to the <a href="randomMessage.html">Random Message Demo</a></p>
+        <script src="scripts/webSocket.js"></script>
+    </body>
+</html>

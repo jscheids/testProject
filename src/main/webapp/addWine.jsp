@@ -13,6 +13,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="scripts/wineAdmin.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
@@ -22,16 +23,18 @@
         <jsp:include page ="adminHeader.jsp" />
 
         <div class="container">
+            
+            <div class="panel panel-default">
+                   
+                <div class="panel-heading">
             <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_MGR')">
-            <h1>Add Wine</h1>  
-            <h3>
+            <h1 class="panel-title">Add Wine</h1>  
+            <h3 class="panel-title">
                 Please enter all information:
-            </h3><br> 
-            <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
-
-                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
-            </form>
+            </h3>
+            </div>
+            
             <form id="addWineForm" name="addWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
 
                 <br>
@@ -62,11 +65,15 @@
                 </table>
                 <br>
                 <input type="submit" name="submit" id="submit" value="Submit">
-                <br>
-                <br>
+               
+            </form>
+                        <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
+
+                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
             </form>
                         </sec:authorize>
         </div>   
+            </div> 
 
         <jsp:include page ="adminFooter.jsp" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

@@ -7,10 +7,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
-
+<link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
 <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
     <nav class="navbar navbar-default navbar-static-top" style="background-color: #dae3cd;">
-
+       
         <div class="container">
             <div class="navbar-header">
                 <p style="float: left;"><img class="img-responsive" style="max-width:80px; margin-top: 7px; margin-right: 1px;"

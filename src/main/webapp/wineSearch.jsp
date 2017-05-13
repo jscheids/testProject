@@ -13,6 +13,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="scripts/wineAdmin.css">
        <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
@@ -25,12 +26,15 @@
     <body>
         <jsp:include page ="adminHeader.jsp" />
         
-        <div class="col-md-6">
-             
+        <div class="col-md-12">
+       <div class="panel panel-default">
+                   
+                          <div class="panel-heading">
+                              <sec:authorize access="hasAnyRole('ROLE_MGR')">    
        <h1>Wine Search</h1>
         <p><b>Please Enter Search Criteria:</p>
-        <br>
-
+                              </div>
+       <div class="panel-body">
         <form method="POST" id="formWineSearch" action="WineController?requestType=search">
            
            
@@ -48,18 +52,19 @@
                             </c:forEach>
                         </select>
                         </td>
-                      <td><b>Wine Name (all or starting with): </b></td>
+                      <td><b>Wine Name (all or starting with):</b></td>
                     <td><input type='text' id="wineSearchName" name="wineSearchName"/></td>
                        
-                    </tr>
-                    <tr> 
+                   
+                   
 <td><b>Min Price: </b></td>
                     <td><input type='text' id="wineSearchMinPrice" name="wineSearchMinPrice"/></td>
                     <td><b>Max Price: </b></td>
                     <td><input type='text' id="wineSearchMaxPrice" name="wineSearchMaxPrice"/></td>
-        </tr> 
+         </tr>
                 </table> 
-            
+            <br>
+            <br>
             
             
             
@@ -71,10 +76,13 @@
             <p style="font-weight: bold;color: red;width:500px;">Sorry, data could not be retrieved:<br>
                 ${errMsg}</p>
             </c:if>  
+           
+       </sec:authorize> 
             </div>
-        <div class="col-md-6">
-            More coming soon! 
         </div>
+             </div>
+    
+      
             <jsp:include page ="adminFooter.jsp" /> 
  
             

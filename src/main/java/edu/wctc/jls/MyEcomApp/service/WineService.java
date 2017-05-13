@@ -26,7 +26,7 @@ public class WineService {
     private WineRepository wineRepo;
 
      @Inject 
-    private DeleteNotificationEmailSender deleteNoticeEmailSender; 
+    private NotificationEmailSender noticeEmailSender; 
   
     public WineService() {
     }
@@ -52,7 +52,7 @@ public class WineService {
     public void remove(Wine wine ) {
         LOG.debug("Deleting wine: " + wine.getWineName());
         wineRepo.delete(wine);
-          deleteNoticeEmailSender.sendEmail("Wine", wine.getWineName());
+        noticeEmailSender.sendDeleteEmail("Wine", wine.getWineName(), wine.getWinePrice().toString());
     }
 
     /**
@@ -61,8 +61,10 @@ public class WineService {
      * @param wine wine object to be edited
      */
     @Transactional
-    public Wine edit(Wine wine) {
-        return wineRepo.saveAndFlush(wine);  
+    public Wine edit(Wine wine, String previousWineName, String previousWinePrice) {
+        Wine editedWine= wineRepo.saveAndFlush(wine);  
+         noticeEmailSender.sendEditEmail("Wine", previousWineName, previousWinePrice);
+         return editedWine; 
     }
     /**
      * 

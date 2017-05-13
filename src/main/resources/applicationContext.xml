@@ -41,6 +41,7 @@
     <sec:http pattern="/scripts/**" security="none"/>
     <sec:http pattern="/images/**" security="none"/>
     
+    
     <sec:http auto-config="true" use-expressions="true" disable-url-rewriting="true">
             
         <!-- On Glassfish, dev ports are 8080 and 8181, whereas on 

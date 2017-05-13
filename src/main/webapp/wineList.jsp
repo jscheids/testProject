@@ -13,15 +13,16 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="scripts/wineAdmin.css">
      <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
         <title>
-            Administrative Wine List
+           Current Wine List
         </title> 
         
     </head>
-    <body>
+      <body>
         <jsp:include page ="adminHeader.jsp" />
 
         <div class="container"> 
@@ -41,9 +42,10 @@
                 </div>
                     </sec:authorize>
                 <br>
+                
                 <div class="table-responsive">
-                    <table class="table table-bordered, table table-striped, table table-hover">
-
+                    <table class="sar-table, table table-bordered, table table-striped, table table-hover" id="localStorageTable">
+                        <thead>
                         <tr>
                             <sec:authorize access="hasAnyRole('ROLE_MGR')">
  <th>
@@ -71,7 +73,9 @@
                                 Remove?
                             </th>
                             </sec:authorize>
-                        </tr>    
+                        </tr> 
+                        </thead>
+                        <tbody>
                         <c:forEach var="wine" items="${wines}" varStatus="varStatus">
                             <tr> 
                                 <sec:authorize access="hasAnyRole('ROLE_MGR')">
@@ -102,7 +106,8 @@
                                 </sec:authorize>
                             </tr>     
 
-                        </c:forEach>             
+                        </c:forEach>   
+                            </tbody>
                     </table>
                 </div>
 
@@ -114,6 +119,13 @@
     </div>
     <jsp:include page ="adminFooter.jsp" /> 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="scripts/sorttable.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script src="//rawgithub.com/akottr/dragtable/master/jquery.dragtable.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    
+    <script src="scripts/wineListSorting.js" type="text/javascript"></script>
+    
 </body>
 </html>

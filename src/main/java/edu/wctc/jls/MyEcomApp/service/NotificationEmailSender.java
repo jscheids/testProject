@@ -20,21 +20,39 @@ import org.springframework.stereotype.Service;
  * @author jlombardo
  */
 @Service("deleteNoticeEmailSender")
-public class DeleteNotificationEmailSender {
+public class NotificationEmailSender {
     @Autowired
     private transient MailSender mailSender;
     @Autowired
     private SimpleMailMessage templateMessage;
 
-    public void sendEmail(Object data, String objectName) throws MailException {
+    public void sendDeleteEmail(Object data, String objectName,String objectPrice) throws MailException {
         String recordType = (String)data;
         
         // Create a thread safe "copy" of the template message and customize it
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setSubject( recordType + " " +  objectName + " Record has been deleted");
+        msg.setSubject( recordType + "named " +  objectName + "priced " +   " Record has been deleted");
         
         // set the messsage
-        msg.setText("An attempt was made to delete a " + recordType 
+        msg.setText("A successful attempt was made to delete a " + recordType 
+                + " record on : " + new Date());         
+        
+        try {
+            mailSender.send(msg);
+        } catch(NullPointerException ex) {
+            throw new MailSendException(ex.getMessage());
+        }
+    }
+    
+    public void sendEditEmail(Object data, String objectName,String objectPrice) throws MailException {
+        String recordType = (String)data;
+        
+        // Create a thread safe "copy" of the template message and customize it
+        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+        msg.setSubject( recordType + "named " +  objectName + "priced " +   " Record has been edited");
+        
+        // set the messsage
+        msg.setText("A successful attempt was made to edit  " + recordType 
                 + " record on : " + new Date());         
         
         try {

@@ -34,7 +34,7 @@ body {
 }
 
 #delete, #add {
- padding: 10px; 
+    padding: 10px; 
     font-size: 18px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
@@ -44,7 +44,7 @@ body {
     border: 1px solid grey;
 }
 #cancel {
-   padding: 10px; 
+    padding: 10px; 
     font-size: 18px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
@@ -55,18 +55,21 @@ body {
     margin-left: 1050px;
 }
 input:focus { 
-    background-color: #D6CDE3;
+    background-color: lemonchiffon; 
+    border: 3px solid #59821e;
+     transform: translateY(2px);
 }
 .form-control:focus {
-
+  
     border-color: #D6CDE3;
     box-shadow: 0px 0px 5px #888888; 
 }
 input[type=text] {
     width: 150px;
-border-radius: 6px; 
+    border-radius: 6px; 
     font-family: 'Open Sans', sans-serif;
-    display: inline-block; 
+ 
+    border: 1px solid #59821e; 
 }
 label {
     display: inline-block; 
@@ -79,10 +82,10 @@ input[type=password] {
     display: inline-block; 
 }
 #searchTable {
-  border-radius: 4px;
-border: 1px solid grey;   
-margin-left: 10px;  
-    
+    border-radius: 4px;
+    border: 1px solid grey;   
+    margin-left: 10px;  
+
 }
 #search {
     padding: 10px; 
@@ -120,7 +123,7 @@ margin-left: 10px;
     font-weight: bold; 
 }
 #editWine {
-   padding: 10px; 
+    padding: 10px; 
     font-size: 18px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
@@ -150,7 +153,7 @@ h4 {
     background-image: url(../images/topography.png); 
 }
 
-#goToListButton, #gotToSearchButton {
+#goToListButton, #gotToSearchButton,#gotToQuickSearchButton, #gotToQuickListButton  {
     padding: 10px; 
     font-size: 18px;
     text-align: center;
@@ -159,6 +162,7 @@ h4 {
     color: #59821e;
     border-radius: 6px;
     border: 1px solid grey; 
+    font-weight: bolder; 
 }
 #form-login-container {
     background-color: #ecf1e6;
@@ -170,7 +174,7 @@ h4 {
     border-radius: 5px;
     border: 1px solid #6d7166;
 }
-.button:active {
+.btn:active {
     background-color: #d3d6cd;
     box-shadow: 0 5px #666;
     transform: translateY(8px);
@@ -185,12 +189,8 @@ html {
     position: relative;
     min-height: 100%;
 }
-#login_user_video{
-       
-}
-#login_mgr_info{
-    margin-top: -100px;     
-}
+
+
 #myCarousel {
     width: 50%; 
     height: 30%; 
@@ -209,4 +209,31 @@ html {
     color: #59821e;
     text-align: center; 
     background-color: #dae3cd;
+}
+
+.my-col-count-style {
+    column-count: 2;
+    column-gap: 15px;
+}
+
+.my-col-count-style .panel {
+
+    width: 100%;
+}
+
+.panel-default > .panel-heading {
+    font-size: xx-large; 
+    font-weight: bold; 
+    color: #59821e;
+    text-align: center; 
+    font-family: 'Montserrat', sans-serif;
+    border: 1px solid #59821e;
+}
+.panel-default {
+    border: 1px solid #59821e;
+    box-shadow: 5px 5px 5px #dae3cd;
+    height: 100%; 
+}
+.row{
+    height: 100%;  
 }
