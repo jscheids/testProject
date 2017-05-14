@@ -1,11 +1,9 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
+
 /* 
     Created on : Mar 18, 2017, 7:17:14 PM
     Author     : Jennifer
+custom CSS used across entire app, sometimes alone on pages, sometimes in conjunction with other CSS files on other pages.
+Requires major clean-up/ review. 5/13/2017
 */
 
 body {
@@ -27,12 +25,6 @@ body {
     left:940px;
 }
 
-@media screen and (min-width: 768px) {
-    .custom-class {
-        width: 70%; /* either % (e.g. 60%) or px (400px) */
-    }
-}
-
 #delete, #add {
     padding: 10px; 
     font-size: 18px;
@@ -52,15 +44,15 @@ body {
     color: #59821e;
     border-radius: 6px;
     border: 1px solid grey; 
-    margin-left: 1050px;
+    margin-left: 10px;
 }
 input:focus { 
     background-color: lemonchiffon; 
     border: 3px solid #59821e;
-     transform: translateY(2px);
+    transform: translateY(2px);
 }
 .form-control:focus {
-  
+
     border-color: #D6CDE3;
     box-shadow: 0px 0px 5px #888888; 
 }
@@ -68,8 +60,23 @@ input[type=text] {
     width: 150px;
     border-radius: 6px; 
     font-family: 'Open Sans', sans-serif;
- 
+
     border: 1px solid #59821e; 
+}
+#messageInput {
+   width: 450px;
+    border-radius: 6px; 
+    font-family: 'Open Sans', sans-serif;
+margin-right: 20px; 
+    border: 1px solid #59821e;  
+    
+}
+
+#messages {
+    border: 1px solid green; ; 
+    width: 500px;
+    float: right; 
+   
 }
 label {
     display: inline-block; 
@@ -153,7 +160,8 @@ h4 {
     background-image: url(../images/topography.png); 
 }
 
-#goToListButton, #gotToSearchButton,#gotToQuickSearchButton, #gotToQuickListButton  {
+
+#goToListButton, #gotToSearchButton,#gotToQuickSearchButton, #gotToQuickListButton, #btn-chat {
     padding: 10px; 
     font-size: 18px;
     text-align: center;
@@ -234,6 +242,9 @@ html {
     box-shadow: 5px 5px 5px #dae3cd;
     height: 100%; 
 }
-.row{
-    height: 100%;  
+#messageArea {
+    float: right; 
+ 
+    margin-top: -40px; 
 }
+

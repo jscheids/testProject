@@ -2,6 +2,8 @@
     Document   : addWine
     Created on : Mar 18, 2017, 7:03:35 PM
     Author     : Jennifer
+add wine page for admins. inputs only visible to users with mgr role. Displays error message/no input to non mgr role visitors. 
+Uses custom jquery vailidation 
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -16,64 +18,55 @@
         <link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="scripts/wineAdmin.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans" rel="stylesheet">
 
     </head>
     <body>
         <jsp:include page ="adminHeader.jsp" />
-
         <div class="container">
-            
             <div class="panel panel-default">
-                   
                 <div class="panel-heading">
-            <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
-            <sec:authorize access="hasAnyRole('ROLE_MGR')">
-            <h1 class="panel-title">Add Wine</h1>  
-            <h3 class="panel-title">
-                Please enter all information:
-            </h3>
-            </div>
-            
-            <form id="addWineForm" name="addWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
-
-                <br>
-                <p id="errorMsg">${errMsg}</p>
-                <table class="table">  
-
-                    <tr>
-                        <td>
-                            Wine Name:   
-                        </td>
-                        <td>
-                            <input type="text" id="wineName" name="wineName" value="${wineName}">
-                        </td>
-                        <td>
-                            Price:   
-                        </td>
-                        <td>
-                            <input type="text" id="winePrice" name="winePrice" value="${winePrice}">
-                        </td>
-                        <td>
-                            Image URL Path:  
-                        </td>
-                        <td>
-                            <input type="text" id="wineImgUrl" name="wineImgUrl" value="${wineImgUrl}">
-                        </td>
-                    </tr>
-
-                </table>
-                <br>
-                <input type="submit" name="submit" id="submit" value="Submit">
-               
-            </form>
-                        <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
-
-                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
-            </form>
-                        </sec:authorize>
-        </div>   
-            </div> 
+                    <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
+                    <sec:authorize access="hasAnyRole('ROLE_MGR')">
+                        <h1 class="panel-title">Add Wine</h1>  
+                        <h3 class="panel-title">
+                            Please enter all information:
+                        </h3>
+                    </div>
+                    <form id="addWineForm" name="addWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
+                        <br>
+                        <p id="errorMsg">${errMsg}</p>
+                        <table class="table">  
+                            <tr>
+                                <td>
+                                    Wine Name:   
+                                </td>
+                                <td>
+                                    <input type="text" id="wineName" name="wineName" value="${wineName}">
+                                </td>
+                                <td>
+                                    Price:   
+                                </td>
+                                <td>
+                                    <input type="text" id="winePrice" name="winePrice" value="${winePrice}">
+                                </td>
+                                <td>
+                                    Image URL Path:  
+                                </td>
+                                <td>
+                                    <input type="text" id="wineImgUrl" name="wineImgUrl" value="${wineImgUrl}">
+                                </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <input type="submit" name="submit" id="submit" value="Submit">
+                    </form>
+                    <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
+                        <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
+                    </form>
+                </sec:authorize>
+            </div>   
+        </div> 
 
         <jsp:include page ="adminFooter.jsp" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

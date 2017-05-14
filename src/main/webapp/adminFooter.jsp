@@ -2,6 +2,7 @@
     Document   : adminFooter
     Created on : Mar 19, 2017, 6:58:19 AM
     Author     : Jennifer
+Custom jsp fragment for the site footer. 
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

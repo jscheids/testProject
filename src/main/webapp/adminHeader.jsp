@@ -2,6 +2,7 @@
     Document   : adminHeader
     Created on : Mar 22, 2017, 5:51:32 PM
     Author     : Jennifer
+custom jsp fragment for the site header. 
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

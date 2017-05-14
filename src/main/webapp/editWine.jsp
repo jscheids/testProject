@@ -2,6 +2,8 @@
     Document   : editWine
     Created on : Mar 18, 2017, 7:04:42 PM
     Author     : Jennifer
+edit wine page for admins. inputs only visible to users with mgr role. Displays error message/no input to non mgr role visitors. 
+Uses custom jquery vailidation 
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -25,8 +27,12 @@
         <div class="container">
              <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
              <sec:authorize access="hasAnyRole('ROLE_MGR')">
-            
-            <h1>Edit Wine</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+            <h1 class="panel-title">Edit Wine</h1>
+                </div>
+                <div class="panel-body">
+
             <img class ='img-responsive' src="${pageContext.request.contextPath}/images/${wineImgUrl}"><br>
             <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
 
@@ -87,6 +93,8 @@
 
             </form>
 </sec:authorize>
+            </div>
+                </div>
         </div>
         <jsp:include page ="adminFooter.jsp" /> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

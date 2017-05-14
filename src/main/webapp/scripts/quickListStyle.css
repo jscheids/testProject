@@ -1,22 +1,17 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
+
 /* 
     Created on : May 7, 2017, 6:28:34 PM
     Author     : Jennifer
+Custom CSS to support the ajax/json list page.
 */
-
-
 
 html {
     position: relative;
     min-height: 100%;
 }
 .actionButtons {
-	padding-top: 5px;
-        margin-right: 10px; 
+    padding-top: 5px;
+    margin-right: 10px; 
 }
 
 button {
@@ -45,99 +40,79 @@ body {
     background-color: #dae3cd;
 }
 .leftArea {
-	position: absolute;
-	left: 200px;
-	top: 170px;
-	bottom: 20px;
-	width: 300px;
-	border:solid 2px #59821e;
-	overflow-y: scroll;
-      
+    position: absolute;
+    left: 200px;
+    top: 170px;
+    bottom: 20px;
+    width: 300px;
+    border:solid 2px #59821e;
+    overflow-y: scroll;
 }
-
 .mainArea {
-	position: absolute;
-	top: 170px;
-	bottom: 20px;
-	left:800px;
-	width:300px;
-        
-}#container {
-   
- bottom: 150px;  
-    
+    position: absolute;
+    top: 170px;
+    bottom: 20px;
+    left:800px;
+    width:300px;
 }
-
+#container {
+    bottom: 150px;  
+}
 .rightArea {
-	position: absolute;
-	top: 170px;
-	bottom: 20px;
-	left:950px;
-	width:120px;
-     
+    position: absolute;
+    top: 170px;
+    bottom: 20px;
+    left:950px;
+    width:120px;
 }
-
 ul {
-	list-style-type: none;
-	padding-left: 0px;
-	margin-top: 0px;
-        margin-bottom: 30px; 
+    list-style-type: none;
+    padding-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 30px; 
 }
-
 li a { 
-	text-decoration:none;
-	display: block;
-	color: #59821e;
-	border-bottom:solid 1px #59821e;
-	padding: 8px;
+    text-decoration:none;
+    display: block;
+    color: #59821e;
+    border-bottom:solid 1px #59821e;
+    padding: 8px;
 }
-
 li a:hover {
-	background-color: #59821e;
-        color: #dae3cd;
-	
-}
+    background-color: #59821e;
+    color: #dae3cd;
 
+}
 input, textarea {
-  border:1px solid #59821e;
-  min-height:30px;
-  outline: none;
+    border:1px solid #59821e;
+    min-height:30px;
+    outline: none;
 }
-
 .mainArea input {
-  margin-bottom:15px;
-  margin-top:5px;
-  width:280px;
+    margin-bottom:15px;
+    margin-top:5px;
+    width:280px;
 }
-
 textarea {
-	margin-bottom:15px;
-  	margin-top:5px;
-	height: 200px;
-  	width:250px;
+    margin-bottom:15px;
+    margin-top:5px;
+    height: 200px;
+    width:250px;
 }
-
-label {
-	display:block;
-}
-
-button {
-	padding:6px;
-        margin-right: 10px;
-}
-
-
-#searchKey {
-	width:160px;
-}
-
 .apiHead {
     font-size: large;
     font-weight: bold;
 }
-
 .errMsg {
     font-weight: bold;
     color: red;
 }
+label {
+    display:block;
+}
+button {
+    padding:6px;
+    margin-right: 10px;
+}
+
 

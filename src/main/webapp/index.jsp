@@ -2,6 +2,8 @@
     Document   : index
     Created on : Mar 12, 2017, 8:32:36 PM
     Author     : Jennifer
+first page logged in users see. Uses role- based spring secutiry to display different eleements to diffrent roles. 
+Also includes chat window features for admins. 
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -47,7 +49,7 @@
                                     ${hitCount}</p>
                                 </sec:authorize>
                                 <sec:authorize access="hasAnyRole('ROLE_USER')">
-                                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/c9yyzkx5g78" frameborder="0" allowfullscreen>
+                                <iframe width="540" height="315" src="https://www.youtube-nocookie.com/embed/c9yyzkx5g78" frameborder="0" allowfullscreen>
 
                                 </iframe> </sec:authorize>
                             </div> 
@@ -57,7 +59,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h1 class="panel-title">Explore Wisconsin Wines:</h1>
-                                <h4 class="panel-title">New Wines Addded Every Month!</h4>
+                                <h4 class="panel-title">New Wines Added Every Month!</h4>
                             </div>   
 
 
@@ -65,7 +67,7 @@
 
                                 <a  class="btn"style="color: #59821e;"  id="goToListButton" href=<%=response.encodeURL("WineController?requestType=wineList")%>>View Current Wines</a>
                             <a class="btn" id="gotToSearchButton" style="color: #59821e;" href=<%=response.encodeURL("WineController?requestType=enterSearch")%>>Search For a Wine</a>
-             
+
                             <a class="btn" id="gotToQuickListButton" style="color: #59821e;" href=<%=response.encodeURL("WineController?requestType=quickList")%>>Quick List</a>
 
                         </div>
@@ -73,27 +75,33 @@
                 </div>
 
             </div>
-<h3> Current Messages from Admins</h3>
-        <textarea id="messages" class="panel message-area" disabled></textarea>
-        <div class="panel input-area">
-            <input id="userName" class="text-field" type="text" placeholder="Name"/>
-            
-            <!-- Optionally recognize the ENTER key as a Send Button press -->
-            <input id="messageInput" class="text-field" type="text" placeholder="Message"
-                   onkeydown="if (event.keyCode == 13) sendMessage();" />
-            
-            <!-- Send a websocket message to the endpoint on click -->
-            <input class="button" type="submit" value="Send" onclick="sendMessage();" />
-        </div>
+                            <div id="messageArea">
+             <h4>Great River Road Wines News Feed</h4>
+             <sec:authorize access="hasAnyRole('ROLE_USER')"> 
+               
+            <input type="text" id="messages"  readonly/></sec:authorize>
+           
+            <sec:authorize access="hasAnyRole('ROLE_MGR')"> 
+            <div class="panel input-area">
+               
+                <input id="messageInput" class="text-field" type="text" placeholder="enter news feed item"
+                       onkeydown="if (event.keyCode == 13) sendMessage();" />
 
-        </div>
+                <!--  websocket message to the endpoint on click -->
+                <input class="button" id="btn-chat" type="submit" value="Send" onclick="sendMessage();" />
+            </div>
 
+       
+                
+</sec:authorize>
+                            </div>
+        </div> 
         <jsp:include page ="adminFooter.jsp" /> 
-         
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-      
- <script src ="scripts/webSocket.js" type="text/javascript"></script>
+
+        <script src ="scripts/webSocket.js" type="text/javascript"></script>
     </body>
-    
+
 </html>
