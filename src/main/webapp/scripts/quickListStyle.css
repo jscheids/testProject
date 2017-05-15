@@ -60,9 +60,9 @@ body {
 }
 .rightArea {
     position: absolute;
-    top: 170px;
+    top: 150px;
     bottom: 20px;
-    left:950px;
+    left:990px;
     width:120px;
 }
 ul {
@@ -113,6 +113,11 @@ label {
 button {
     padding:6px;
     margin-right: 10px;
+}
+#btnSave{
+    font-weight: bold;
+    padding:10px;
+     color: #59821e;
 }
 
 

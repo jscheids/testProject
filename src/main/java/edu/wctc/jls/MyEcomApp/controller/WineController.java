@@ -46,8 +46,7 @@ public class WineController extends HttpServlet {
     private static final String ADD_WINE_PAGE = "/addWine.jsp";
     private static final String EDIT_WINE_PAGE = "/editWine.jsp";
     private static final String WINE_SEARCH_PAGE = "/wineSearch.jsp";
-     private static final String WINE_QUICKLIST_PAGE = "/quickList.jsp";
-    
+    private static final String WINE_QUICKLIST_PAGE = "/quickList.jsp";
 
     //these are the values "grabbed" from the page
     private static final String WINE_ID = "wineId";
@@ -56,10 +55,14 @@ public class WineController extends HttpServlet {
     private static final String WINE_PRICE = "winePrice";
     private static final String WINE_ID_CBX = "wineId";
     private static final String WINE_LIST = "wines";
+    private static final String DATE_FORMAT = "MMMM d, yyyy";
     private static final String WINE_IMG_URL = "wineImgUrl";
 
-    //database variables 
+    //database/misc. variables 
     private static final String WINE_EDIT_ID = "editWine";
+    //for notification email. edit wine method requires these. 
+    private static final String NEW_WINE= " New Wine "; 
+    private static final String NEW_WINE_PRICE = " No Previous Price "; 
 
     //different types of requests that may come in from the UI
     private static final String WINE_LIST_REQ = "wineList";
@@ -71,8 +74,7 @@ public class WineController extends HttpServlet {
     private static final String SEARCH_REQ = "search";
     private static final String HOME_REQ = "home";
     private static final String ENTER_SEARCH_REQ = "enterSearch";
-     private static final String QUICKLIST_REQ = "quickList";
-    
+    private static final String QUICKLIST_REQ = "quickList";
 
     //error/validation messagining
     private static final String ERROR_MSG_KEY = "errMsg";
@@ -81,8 +83,6 @@ public class WineController extends HttpServlet {
 
     //vaules releated to searching
     private static final String WINE_SEARCH_ID = "wineSearchId";
-    
-    
     private static final String WINE_SEARCH_NAME = "wineSearchName";
     private static final String WINE_SEARCH_MIN_PRICE = "wineSearchMinPrice";
     private static final String WINE_SEARCH_MAX_PRICE = "wineSearchMaxPrice";
@@ -105,21 +105,17 @@ public class WineController extends HttpServlet {
 
         HttpSession session = request.getSession();
         ServletContext ctx = request.getServletContext();
-        // default initilization for destination var
+
+        // default initilization for destination, req action and wine
         String destination = HOME_PAGE;
-
         String req_Action = request.getParameter(REQ_TYPE);
-
         Wine wine = null;
 
         try {
-
             switch (req_Action) {
-                
-                
                 case QUICKLIST_REQ:
-                  destination = WINE_QUICKLIST_PAGE;
-                    break;  
+                    destination = WINE_QUICKLIST_PAGE;
+                    break;
 
                 case WINE_LIST_REQ:
 
@@ -140,19 +136,15 @@ public class WineController extends HttpServlet {
                     if (wineToDelete != null) {
                         try {
                             for (String id : wineToDelete) {
-
                                 wine = wineService.findById(id);
                                 wineService.remove(wine);
-
                             }
                             refreshResults(request, wineService);
                         } catch (InvalidParameterException | SQLException | ClassNotFoundException e) {
                             request.setAttribute(ERROR_MSG_KEY, e.getMessage());
                             destination = WINE_LIST_PAGE;
-
                         }
                     }
-
                     break;
 
                 case ADD_WINE_REQ:
@@ -162,11 +154,11 @@ public class WineController extends HttpServlet {
                 case EDIT_WINE_REQ:
                     destination = EDIT_WINE_PAGE;
                     String id = request.getParameter(WINE_EDIT_ID);
-                    
+
                     try {
                         // Wine wine = wineService.find(new Integer(id));
                         wine = wineService.findById(id);
-                       
+
                         request.setAttribute(WINE_ID, wine.getWineId());
                         request.setAttribute(WINE_NAME, wine.getWineName());
                         request.setAttribute(WINE_PRICE, wine.getWinePrice());
@@ -191,23 +183,19 @@ public class WineController extends HttpServlet {
 
                     }
                     break;
-
+                    //save req should be simplified. I don't dare touch it though before tomorrow. 
                 case SAVE_REQ:
                     destination = WINE_LIST_PAGE;
                     try {
-
                         String wineName = request.getParameter(WINE_NAME);
                         String dateAdded = request.getParameter(DATE_ADDED);
                         String winePrice = request.getParameter(WINE_PRICE);
                         String req_id = request.getParameter(WINE_ID);
                         String wineImgUrl = request.getParameter(WINE_IMG_URL);
-
-// if id is not there, it must be a new
-//consider moving date to wine class- doesn't belong in controller imo. Look at midterm to see what I did. 
+                        // if id is not there, it must be a new
                         if (req_id == null || req_id.isEmpty()) {
                             DateHelper dh = new DateHelper();
                             String date = dh.getCurrentDate();
-
                             // this is validation that prevents empty vaules from being put in at the UI. Useful if JS is turned off and Jquery validation doesn't run  
                             if (wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null) {
                                 request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
@@ -218,33 +206,30 @@ public class WineController extends HttpServlet {
 
                             wine = new Wine(0);
                             wine.setWineName(wineName);
-
-                            // need to move, for now just doing it here to get it done
                             BigDecimal bigDecimalValue = new BigDecimal(winePrice);
                             wine.setWinePrice(bigDecimalValue);
                             wine.setWineImgUrl(wineImgUrl);
                             wine.setDateAdded(new Date());
-                            wineService.edit(wine, "newWine", "newPrice");
+                            wineService.edit(wine, NEW_WINE, NEW_WINE_PRICE);
                         } else {
                             //else it is an "edit" request bc it has an id
                             wine = wineService.findById(req_id);
-                             String previousWineName=(wine.getWineName()); 
-                        String previousWinePrice =(wine.getWinePrice().toString()); 
+                            // getting wine values before editing so that we can include these two important values in the noticfication email. 
+                            String previousWineName = (wine.getWineName());
+                            String previousWinePrice = (wine.getWinePrice().toString());
                             wine.setWineName(wineName);
-
-                            // need to move, for now just doing it here to get it done
                             BigDecimal bigDecimalValue = new BigDecimal(winePrice);
                             wine.setWinePrice(bigDecimalValue);
                             wine.setWineImgUrl(wineImgUrl);
-                            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-
+                            DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
                             try {
                                 Date date = format.parse(dateAdded);
                                 wine.setDateAdded(date);
                             } catch (ParseException ex) {
-                                Logger.getLogger(WineController.class.getName()).log(Level.SEVERE, null, ex);
+                                request.setAttribute(ERROR_MSG_KEY, ex.getMessage());
+                                destination = WINE_LIST_PAGE;
                             }
-
+                                    
                             //server side validation in event of client side validation failure
                             if (wineName.isEmpty() || wineName == null || winePrice.isEmpty() || winePrice == null || wineImgUrl.isEmpty() || wineImgUrl == null) {
                                 request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
@@ -264,50 +249,58 @@ public class WineController extends HttpServlet {
                     break;
 
                 case SEARCH_REQ:
+                    // create an empty list to put in our values
                     List<Wine> wines = null;
                     String wineSearchMinPrice;
                     String wineSearchMaxPrice;
                     String wineId = request.getParameter(WINE_SEARCH_ID);
-
                     String wineName = request.getParameter(WINE_SEARCH_NAME);
                     wineSearchMinPrice = request.getParameter(WINE_SEARCH_MIN_PRICE);
                     wineSearchMaxPrice = request.getParameter(WINE_SEARCH_MAX_PRICE);
-                    if (wineId.equals(WINE_SEARCH_ID_ALL)) {
-                        if ((!(wineName.isEmpty())) && (wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty())) {
-                            wines = wineService.searchByName(wineName);
-                        } else if ((!(wineSearchMinPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && wineName.isEmpty()) {
-                            wines = wineService.searchByWinePrice(wineSearchMinPrice, wineSearchMaxPrice);
-                        } else if ((!(wineSearchMinPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
-                            wines = wineService.searchByWineNameAndPrice(wineName, wineSearchMinPrice, wineSearchMaxPrice);
-                        } else if (wineSearchMinPrice.isEmpty() && wineSearchMinPrice.isEmpty() && wineName.isEmpty()) {
-                            wines = wineService.findAll();
+                    try {
+                        if (wineId.equals(WINE_SEARCH_ID_ALL)) {
+                            if ((!(wineName.isEmpty())) && (wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty())) {
+                                wines = wineService.searchByName(wineName);
+                            } else if ((!(wineSearchMinPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && wineName.isEmpty()) {
+                                wines = wineService.searchByWinePrice(wineSearchMinPrice, wineSearchMaxPrice);
+                            } else if ((!(wineSearchMinPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
+                                wines = wineService.searchByWineNameAndPrice(wineName, wineSearchMinPrice, wineSearchMaxPrice);
+                            } else if (wineSearchMinPrice.isEmpty() && wineSearchMinPrice.isEmpty() && wineName.isEmpty()) {
+                                wines = wineService.findAll();
+                            }
+                        } else if (!(wineId.equals(WINE_SEARCH_ID_ALL))) {
+                            if ((!(wineName.isEmpty())) && wineSearchMaxPrice.isEmpty()) {
+                                Integer wId = new Integer(wineId);
+                                wines = wineService.searchByWineIdAndName(wId, wineName);
+                            } else if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && wineName.isEmpty()) {
+                                Integer wId = new Integer(wineId);
+                                wines = wineService.searchByWineIdAndPrice(wId, wineSearchMinPrice, wineSearchMaxPrice);
+                            } else if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
+                                Integer wId = new Integer(wineId);
+                                wines = wineService.searchByWineIdAndNameAndPrice(wId, wineName, wineSearchMinPrice, wineSearchMaxPrice);
+                            } else if ((wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty()) && (wineName.isEmpty())) {
+                                Integer wId = new Integer(wineId);
+                                wines = wineService.searchByWineId(wId);
+                            }
                         }
-                    } else if (!(wineId.equals(WINE_SEARCH_ID_ALL))) {
-                        if ((!(wineName.isEmpty())) && wineSearchMaxPrice.isEmpty()) {
-                            Integer wId = new Integer(wineId);
-                            wines = wineService.searchByWineIdAndName(wId, wineName);
-                        } else if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && wineName.isEmpty()) {
-                            Integer wId = new Integer(wineId);
-                            wines = wineService.searchByWineIdAndPrice(wId, wineSearchMinPrice, wineSearchMaxPrice);
-                        } else if ((!(wineSearchMaxPrice.isEmpty())) && (!(wineSearchMinPrice.isEmpty())) && (!(wineName.isEmpty()))) {
-                            Integer wId = new Integer(wineId);
-                            wines = wineService.searchByWineIdAndNameAndPrice(wId, wineName, wineSearchMinPrice, wineSearchMaxPrice);
-                        } else if ((wineSearchMaxPrice.isEmpty()) && (wineSearchMinPrice.isEmpty()) && (wineName.isEmpty())) {
-                            Integer wId = new Integer(wineId);
-                            wines = wineService.searchByWineId(wId);
-                        }
+                    } catch (InvalidParameterException e) {
+                        request.setAttribute(ERROR_MSG_KEY, MISSING_INPUT_MSG);
+                        destination = WINE_SEARCH_PAGE;
                     }
-
                     request.setAttribute(WINE_LIST, wines);
                     destination = WINE_LIST_PAGE;
                     break;
 
                 case ENTER_SEARCH_REQ:
-
+try{
                     wines = wineService.findAll();
-                    destination = WINE_LIST_PAGE;
-                    request.setAttribute(WINE_LIST, wines);
+                      request.setAttribute(WINE_LIST, wines);
                     destination = WINE_SEARCH_PAGE;
+                    } catch (InvalidParameterException e) {
+                        request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+                        destination = HOME_PAGE;
+                    }
+                  
                     break;
 
                 case HOME_REQ:

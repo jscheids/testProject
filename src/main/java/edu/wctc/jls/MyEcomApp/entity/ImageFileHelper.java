@@ -15,6 +15,7 @@ import java.util.Set;
 
 /**
  * helper class to wine class to search to see if an image file exists in the images folder
+ * Not currently functioning after update to spring. 5/14/2017
  * @author Jennifer
  */
 public class ImageFileHelper {

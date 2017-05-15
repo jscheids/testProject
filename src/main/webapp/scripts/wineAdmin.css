@@ -36,8 +36,21 @@ body {
     border: 1px solid grey;
 }
 #cancel {
-    padding: 10px; 
-    font-size: 18px;
+    padding: 5px; 
+    font-size: 12px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #D6CDE3; 
+    color: #59821e;
+    border-radius: 6px;
+    border: 1px solid grey; 
+ 
+    float: right; 
+
+}
+#cancel-edit {
+   padding: 5px; 
+    font-size: 12px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
     background-color: #D6CDE3; 
@@ -45,10 +58,67 @@ body {
     border-radius: 6px;
     border: 1px solid grey; 
     margin-left: 10px;
+    float: right; 
+    margin-top: -160px;   
+    
+}
+#errorHeaderMsg {
+  text-align: center;   
+}
+#errorArea {
+  top: 200px; 
+      
+}
+#errorHelpMsg{
+  width: 80%;
+box-shadow: 5px, 15px, 5px grey;
+border: 1px solid #6d7166;
+border-radius: 5px; 
+ margin-left: 200px;    
+}
+#errorGIF {
+  margin-bottom: 100px; 
+   margin-top: 10px; 
+   margin-left: 679px; 
+   
+}
+#loginLink {
+   
+    border: 1px solid green;
+    margin-top: -60px; padding: 6px; 
+    border-radius: 5px; 
+    background-color: greenyellow; 
+    margin-right: 10px; 
+}
+#cancel-search{ 
+    padding: 5px; 
+    font-size: 12px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #D6CDE3; 
+    color: #59821e;
+    border-radius: 6px;
+    border: 1px solid grey; 
+margin-right: 20px; 
+    float: right;
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+}
+#helpText {
+  text-align: center; 
+padding: 5px;   
+}
+#loginLink {
+    float: right; 
+}
+
+#panel-edit {
+   width: 40%;
+    height:  30%; 
 }
 input:focus { 
     background-color: lemonchiffon; 
-    border: 3px solid #59821e;
+    border: 3px solid#6d7166;
     transform: translateY(2px);
 }
 .form-control:focus {
@@ -115,8 +185,35 @@ input[type=password] {
     border-radius: 6px;
     border: 1px solid grey;
 }
+
+#submit-add {
+   padding: 10px; 
+    font-size: 18px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #D6CDE3; 
+    color: #59821e;
+    border-radius: 6px;
+    border: 1px solid grey;  
+   float: right; 
+ 
+    
+}
+
+#panel-add{
+
+   width: 50%;
+    height:  30%; 
+ 
+}
 .carousel-inner {
     border: 1px solid grey; 
+}
+#btnSave{
+    float:right; 
+}
+#btnAdd {
+    
 }
 #btn-login-submit {
     padding: 8px;
@@ -128,6 +225,7 @@ input[type=password] {
     margin-left: 25em; 
     font-family: 'Open Sans', sans-serif;
     font-weight: bold; 
+    
 }
 #editWine {
     padding: 10px; 
@@ -139,6 +237,8 @@ input[type=password] {
     border-radius: 6px;
     border: 1px solid grey;
 }
+
+
 h2, h3 {
     font-family: 'Montserrat', sans-serif;
     font-weight: bolder;
@@ -247,4 +347,16 @@ html {
  
     margin-top: -40px; 
 }
+#wineName-add {
+width: 200px;  
+margin-left: -15px; 
+}
 
+#winePrice-add {
+width: 100px;  
+margin-left: 85px; 
+}
+#wineImgUrl-add {
+width: 200px;  
+margin-left: -15px; 
+}

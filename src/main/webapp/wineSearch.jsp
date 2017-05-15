@@ -26,14 +26,18 @@
     <body>
         <jsp:include page ="adminHeader.jsp" />
         
-        <div class="col-md-12">
+        <div class="col-md-8">
        <div class="panel panel-default">
                    
                           <div class="panel-heading">
-                              <sec:authorize access="hasAnyRole('ROLE_MGR')">    
-       <h1>Wine Search</h1>
-        <p><b>Please Enter Search Criteria:</p>
+                              <sec:authorize access="hasAnyRole('ROLE_MGR', 'ROLE_USER')">    
+         <h1 class="panel-title"> Wine Search</h1>  
+        Please Enter Search Criteria:
                               </div>
+           <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
+
+                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel-search"/>
+            </form>
        <div class="panel-body">
         <form method="POST" id="formWineSearch" action="WineController?requestType=search">
            
@@ -54,9 +58,7 @@
                         </td>
                       <td><b>Wine Name (all or starting with):</b></td>
                     <td><input type='text' id="wineSearchName" name="wineSearchName"/></td>
-                       
-                   
-                   
+
 <td><b>Min Price: </b></td>
                     <td><input type='text' id="wineSearchMinPrice" name="wineSearchMinPrice"/></td>
                     <td><b>Max Price: </b></td>
@@ -65,9 +67,7 @@
                 </table> 
             <br>
             <br>
-            
-            
-            
+
                      <input type="submit"  value="Search" name="mysubmit" id="search" />
            
            

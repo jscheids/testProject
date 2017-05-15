@@ -1,12 +1,11 @@
 package edu.wctc.jls.MyEcomApp.listeners;
 
-import edu.wctc.jls.MyEcomApp.controller.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
- * The session Listnter class responds to sessionCreate and sessionDestroyed
+ * The session Listener class responds to sessionCreate and sessionDestroyed
  * events. Used here to track how many "hits," or sessions have been created.
  *
  * @author Jennifer
@@ -33,10 +32,12 @@ public class MySessionListener implements HttpSessionListener {
 
     }
 // Method not currently used
-     @Override
-     public void sessionDestroyed(HttpSessionEvent se) {
 
-     }
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+
+    }
+
     /**
      * returns the "hitCount"
      *

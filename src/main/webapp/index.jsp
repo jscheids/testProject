@@ -64,37 +64,41 @@ Also includes chat window features for admins.
 
 
                             <div class="panel-body">
-
+                            <sec:authorize access="hasAnyRole('ROLE_MGR', 'ROLE_USER')"> 
                                 <a  class="btn"style="color: #59821e;"  id="goToListButton" href=<%=response.encodeURL("WineController?requestType=wineList")%>>View Current Wines</a>
+                            </sec:authorize> 
+                            <sec:authorize access="hasAnyRole('ROLE_MGR', 'ROLE_USER')"> 
+                            </sec:authorize>    
                             <a class="btn" id="gotToSearchButton" style="color: #59821e;" href=<%=response.encodeURL("WineController?requestType=enterSearch")%>>Search For a Wine</a>
-
-                            <a class="btn" id="gotToQuickListButton" style="color: #59821e;" href=<%=response.encodeURL("WineController?requestType=quickList")%>>Quick List</a>
-
+                            <sec:authorize access="hasAnyRole('ROLE_MGR')"> 
+                                <a class="btn" id="gotToQuickListButton" style="color: #59821e;" href=<%=response.encodeURL("WineController?requestType=quickList")%>>Quick List</a>
+                            </sec:authorize>
                         </div>
                     </div>
                 </div>
 
             </div>
-                            <div id="messageArea">
-             <h4>Great River Road Wines News Feed</h4>
-             <sec:authorize access="hasAnyRole('ROLE_USER')"> 
-               
-            <input type="text" id="messages"  readonly/></sec:authorize>
-           
-            <sec:authorize access="hasAnyRole('ROLE_MGR')"> 
-            <div class="panel input-area">
-               
-                <input id="messageInput" class="text-field" type="text" placeholder="enter news feed item"
-                       onkeydown="if (event.keyCode == 13) sendMessage();" />
+            <div id="messageArea">
+                <h4>Great River Road Wines News Feed</h4>
+                <sec:authorize access="hasAnyRole('ROLE_USER')"> 
+                    <h4>Great River Road Wines News Feed</h4>
+                    <input type="text" id="messages"  readonly/></sec:authorize>
 
-                <!--  websocket message to the endpoint on click -->
-                <input class="button" id="btn-chat" type="submit" value="Send" onclick="sendMessage();" />
+                <sec:authorize access="hasAnyRole('ROLE_MGR')"> 
+                    <div class="panel input-area">
+
+                        <input id="messageInput" class="text-field" type="text" placeholder="enter news feed item"
+                               onkeydown="if (event.keyCode == 13)
+                                           sendMessage();" />
+
+                        <!--  websocket message to the endpoint on click -->
+                        <input class="button" id="btn-chat" type="submit" value="Send" onclick="sendMessage();" />
+                    </div>
+
+
+
+                </sec:authorize>
             </div>
-
-       
-                
-</sec:authorize>
-                            </div>
         </div> 
         <jsp:include page ="adminFooter.jsp" /> 
 

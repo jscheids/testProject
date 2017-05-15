@@ -24,50 +24,59 @@ Uses custom jquery vailidation
     <body>
         <jsp:include page ="adminHeader.jsp" />
         <div class="container">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="panel panel-default"id="panel-add">
+                <div class="panel-heading" >
                     <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_MGR')">
                         <h1 class="panel-title">Add Wine</h1>  
-                        <h3 class="panel-title">
-                            Please enter all information:
-                        </h3>
+                        
                     </div>
+                         <div class="panel-body">
+                                  <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
+                        <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
+                    </form>
+                             <h4>
+                            Please enter all information:
+                        </h4>
+                         
                     <form id="addWineForm" name="addWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
-                        <br>
+                      
                         <p id="errorMsg">${errMsg}</p>
                         <table class="table">  
                             <tr>
                                 <td>
                                     Wine Name:   
                                 </td>
+                               
                                 <td>
-                                    <input type="text" id="wineName" name="wineName" value="${wineName}">
+                                    <input type="text" id="wineName-add" name="wineName" value="${wineName}">
                                 </td>
+                                 </tr>
+                                 <tr>
                                 <td>
                                     Price:   
                                 </td>
                                 <td>
-                                    <input type="text" id="winePrice" name="winePrice" value="${winePrice}">
+                                    <input type="text" id="winePrice-add" name="winePrice" value="${winePrice}">
                                 </td>
+                                 </tr>
+                                 <tr>
                                 <td>
                                     Image URL Path:  
                                 </td>
                                 <td>
-                                    <input type="text" id="wineImgUrl" name="wineImgUrl" value="${wineImgUrl}">
+                                    <input type="text" id="wineImgUrl-add" name="wineImgUrl" value="${wineImgUrl}">
                                 </td>
-                            </tr>
+                            
                         </table>
-                        <br>
-                        <input type="submit" name="submit" id="submit" value="Submit">
+                       
+                        <input type="submit" name="submit" id="submit-add" value="Submit">
                     </form>
-                    <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
-                        <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
-                    </form>
+                   
                 </sec:authorize>
             </div>   
         </div> 
-
+</div> 
         <jsp:include page ="adminFooter.jsp" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

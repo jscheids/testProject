@@ -27,7 +27,7 @@ Uses custom jquery vailidation
         <div class="container">
              <sec:authorize access="hasAnyRole('ROLE_USER')"><p>Whoops,looks like you might be lost. Click on the home button to return to your home page.</p></sec:authorize>
              <sec:authorize access="hasAnyRole('ROLE_MGR')">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="panel-edit">
                 <div class="panel-heading">
             <h1 class="panel-title">Edit Wine</h1>
                 </div>
@@ -36,7 +36,7 @@ Uses custom jquery vailidation
             <img class ='img-responsive' src="${pageContext.request.contextPath}/images/${wineImgUrl}"><br>
             <form id="cancelButtonForm" name="cancelButtonForm" method="POST" action=<%=response.encodeURL("WineController?requestType=cancel")%>>
 
-                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel"/>
+                <input action="<%= response.encodeURL("WineListController?requestType=cancel")%>" type="submit" value="Cancel" name="cancel" id="cancel-edit"/>
             </form>
             <form id="editWineForm" name="editWineForm" method="POST" action=<%=response.encodeURL("WineController?requestType=saveWine")%>>
 
