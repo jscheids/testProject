@@ -6,7 +6,6 @@
 
         // declare JQuery selectors and cache results
         var $btnAdd = $('#btnAdd');
-        var $btnSearch = $('#btnSearch');
         var $btnDelete = $('#btnDelete');
         var $btnSave = $('#btnSave');
         var $wineId = $('#wineId');
@@ -19,6 +18,7 @@
         $btnDelete.hide();
 
         $btnAdd.on('click', function () {
+            alert("hello"); 
             clearForm();
             $btnDelete.hide();
             $wineName.focus();
@@ -26,12 +26,13 @@
         });
 
         $btnSave.click(function () {
-            alert("saving wine")
+           // alert("saving wine");
+           // console.log("clicked save"); 
             if ($wineId.val() === '') {
                 addWine();
             } else {
                 updateWine();
-                alert($wineId.val())
+               // alert($wineId.val());
             }
             return false;
         });
@@ -95,9 +96,10 @@
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
+                data: formToJSON(),
                 url: baseUrl + "?action=update",
-                dataType: "json",
-                data: formToJSON()
+                dataType: "json"
+                
 
             })
                     .done(function () {
@@ -128,7 +130,7 @@
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
 
-                        alert("Wine could not be updated due to: " + errorThrown);
+                        alert("Wine could not be updated due to: " + formToJSON());
                     });
         }
 
@@ -166,12 +168,13 @@
         function formToJSON() {
 
             return JSON.stringify({
-                "wineId": $wineId.val(),
-                "name": $wineName.val(),
-                "price": $winePrice.val(),
-                "dateAdded": $wineDateAdded.val(),
-
-            });
+             
+                "wineId":$wineId.val(),
+                "name": $wineName.val()
+               // "price": $winePrice.val(),
+               // "dateAdded": $wineDateAdded.val()
+             
+                });
 
         }
     });

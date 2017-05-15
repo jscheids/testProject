@@ -47,7 +47,7 @@
  </div>
         </div>
          <div id="errorGIF">
- <img src="images/PcnUjSEMBlpgk.gif" alt="" height="230" width="200" style="border: 2px solid olive"/>
+ <img src="images/loginErrorGif.gif" alt="" height="230" width="200" style="border: 2px solid olive"/>
  </div>
             
 <jsp:include page ="adminFooter.jsp" /> 

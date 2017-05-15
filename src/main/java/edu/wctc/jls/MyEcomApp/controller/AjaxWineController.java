@@ -56,6 +56,14 @@ public class AjaxWineController extends HttpServlet {
     //private static final String REQ_TYPE = "requestType";
     private static final String ERROR_MSG_KEY = "errMsg";
 
+    private static final String WINE_NAME = "name";
+    private static final String WINE_ID = "wineId";
+    private static final String WINE_PRICE = "price";
+    private static final String WINE_DATE = "dateAdded";
+    private static final String JSON_CONTENT_TYPE = "application/json";
+    private static final String TEMP_VALUE = "no value aval.";
+    private static final String OUT_SUCCESS_PRINT = "{\"success\":\"true\"}";
+    private static final String WINE_SERVICE = "wineService";
     private WineService wineService;
 
     /**
@@ -84,21 +92,20 @@ public class AjaxWineController extends HttpServlet {
 
                     refreshWineList(request, response);
 
-
                     break;
 
                 case FIND_ONE_ACTION: {
                     try {
                         Wine wine = wineService.findById(wineId);
                         JsonObjectBuilder builder = Json.createObjectBuilder()
-                                .add("wineId", wine.getWineId())
-                                .add("name", wine.getWineName())
-                                .add("price", wine.getWinePrice())
-                                .add("dateAdded", wine.getDateAdded().toString());
+                                .add(WINE_ID, wine.getWineId())
+                                .add(WINE_NAME, wine.getWineName())
+                                .add(WINE_PRICE, wine.getWinePrice())
+                                .add(WINE_DATE, wine.getDateAdded().toString());
                         JsonObject wineJson = builder.build();
 
                         PrintWriter out = response.getWriter();
-                        response.setContentType("application/json");
+                        response.setContentType(JSON_CONTENT_TYPE);
                         out.write(wineJson.toString());
                         out.flush();
                     } catch (InvalidParameterException e) {
@@ -115,7 +122,7 @@ public class AjaxWineController extends HttpServlet {
                         wineService.remove(wineToDelete);
                         response.setContentType("application/json; charset=UTF-8");
                         response.setStatus(200);
-                        out.write("{\"success\":\"true\"}");
+                        out.write(OUT_SUCCESS_PRINT);
                         out.flush();
                     } catch (InvalidParameterException e) {
                         request.setAttribute(ERROR_MSG_KEY, e.getMessage());
@@ -125,50 +132,64 @@ public class AjaxWineController extends HttpServlet {
                 }
 // Case  update currently does not work, so have not provided any exception handling. May be violating best practices in this block. 
                 case UPDATE_ACTION: {
-                    /**
-                     * PrintWriter out = response.getWriter(); StringBuilder sb
-                     * = new StringBuilder(); BufferedReader br =
-                     * request.getReader(); try { String line; while ((line =
-                     * br.readLine()) != null) { sb.append(line).append('\n'); }
-                     * } finally { br.close(); }
-                     *
-                     * String payload = sb.toString(); JsonReader reader =
-                     * Json.createReader(new StringReader(payload)); JsonObject
-                     * wineJson = reader.readObject(); // create new entity and
-                     * populate Wine wine = new Wine(); wineId =
-                     * wineJson.getString("wineId"); Integer id = (wineId ==
-                     * null || wineId.isEmpty()) ? null :
-                     * Integer.valueOf(wineId); BigDecimal winePrice = new
-                     * BigDecimal(wineJson.getString("price"));
-                     * wine.setWinePrice(winePrice); String wineDateAdded =
-                     * (wineJson.getString("dateAdded")); DateTimeFormatter
-                     * formatter = DateTimeFormatter.ofPattern("mm d, yyyy",
-                     * Locale.ENGLISH); LocalDate date =
-                     * LocalDate.parse(wineDateAdded, formatter); Date wineDate
-                     * =
-                     * Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-                     *
-                     * wine.setWineId(id);
-                     * wine.setWineName(wineJson.getString("name"));
-                     * wine.setWinePrice(winePrice);
-                     *
-                     * wine.setDateAdded(wineDate);
-                     *
-                     * wineService.edit(wine, "sds", "dsd");
-                     *
-                     * response.setContentType("application/json");
-                     * response.setStatus(200);
-                     * out.write("{\"success\":\"true\"}"); out.flush(); break;
-                     *
-                     *
-                     */
+
+                    PrintWriter out = response.getWriter();
+                    StringBuilder sb
+                            = new StringBuilder();
+                    BufferedReader br
+                            = request.getReader();
+                    try {
+                        String line;
+                        while ((line
+                                = br.readLine()) != null) {
+                            sb.append(line).append('\r');
+                        }
+                    } finally {
+                        br.close();
+                    }
+
+                    String payload = sb.toString();
+                    JsonReader reader
+                            = Json.createReader(new StringReader(payload));
+                    JsonObject wineJson = reader.readObject(); // create new entity and
+                    Wine wine = new Wine();
+                    wineId
+                            = wineJson.getString(ID_PARAM);
+                    Integer id = (wineId
+                            == null || wineId.isEmpty()) ? null
+                            : Integer.valueOf(wineId);
+                  //  BigDecimal winePrice = new BigDecimal(wineJson.getString(WINE_PRICE));
+                  //  wine.setWinePrice(winePrice);
+                  //  String wineDateAdded
+                         //   = (wineJson.getString(WINE_DATE));
+                 //   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm d, yyyy",
+                    //        Locale.ENGLISH);
+                  //  LocalDate date
+                         //   = LocalDate.parse(wineDateAdded, formatter);
+                  //  Date wineDate
+                         //   = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
+                    wine.setWineId(id);
+                    wine.setWineName(wineJson.getString(WINE_NAME));
+                  //  wine.setWinePrice(winePrice);
+
+                  //  wine.setDateAdded(wineDate);
+
+                    wineService.edit(wine, TEMP_VALUE, TEMP_VALUE);
+
+                    response.setContentType("application/json; charset=UTF-8");
+                    response.setStatus(200);
+                    out.write(OUT_SUCCESS_PRINT);
+                    out.flush();
+                    break;
+
                 }
             }
 
         } catch (IOException | NumberFormatException | ServletException e) {
             request.setAttribute(ERROR_MSG_KEY, e.getMessage());
             destination = QUICK_LIST_PAGE;
-            request.setAttribute("errMessage", e.getMessage());
+            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
         }
     }
 
@@ -188,29 +209,29 @@ public class AjaxWineController extends HttpServlet {
         if (request == null || response == null) {
             throw new InvalidParameterException();
         }
-        try{ 
-        List<Wine> wines = wineService.findAll();
-        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+        try {
+            List<Wine> wines = wineService.findAll();
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
-        wines.forEach((wine) -> {
-            jsonArrayBuilder.add(
-                    Json.createObjectBuilder()
-                            .add("wineId", wine.getWineId())
-                            .add("name", wine.getWineName())
-                            .add("price", wine.getWinePrice().toString())
-                            .add("dateAdded", wine.getDateAdded().toString())
-            );
-        });
+            wines.forEach((wine) -> {
+                jsonArrayBuilder.add(
+                        Json.createObjectBuilder()
+                                .add(WINE_ID, wine.getWineId())
+                                .add(WINE_NAME, wine.getWineName())
+                                .add(WINE_PRICE, wine.getWinePrice().toString())
+                                .add(WINE_DATE, wine.getDateAdded().toString())
+                );
+            });
 
-        JsonArray winesJson = jsonArrayBuilder.build();
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        out.write(winesJson.toString());
-        out.flush();
-        }catch (InvalidParameterException  e ){
-         request.setAttribute("errMessage", e.getMessage());
-         
-    }
+            JsonArray winesJson = jsonArrayBuilder.build();
+            response.setContentType(JSON_CONTENT_TYPE);
+            PrintWriter out = response.getWriter();
+            out.write(winesJson.toString());
+            out.flush();
+        } catch (InvalidParameterException e) {
+            request.setAttribute(ERROR_MSG_KEY, e.getMessage());
+
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -264,6 +285,6 @@ public class AjaxWineController extends HttpServlet {
     public void init() throws ServletException {
         ServletContext sctx = getServletContext();
         WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(sctx);
-        wineService = (WineService) ctx.getBean("wineService");
+        wineService = (WineService) ctx.getBean(WINE_SERVICE);
     }
 }

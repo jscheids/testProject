@@ -60,9 +60,9 @@ body {
 }
 .rightArea {
     position: absolute;
-    top: 150px;
+    top: 120px;
     bottom: 20px;
-    left:990px;
+    left:750px;
     width:120px;
 }
 ul {
